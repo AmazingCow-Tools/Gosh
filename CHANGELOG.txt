@@ -1,1 +1,5 @@
+version 0.1.1:
+[Set 7 2015] - gosh-go now prints the current directory when its change the dir.
+               Add a very simple makefile to install/uninstall the gosh.
+               The makefile creates a backup in ~/.bash_profile_gosh_backup
 

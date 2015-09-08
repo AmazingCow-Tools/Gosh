@@ -54,7 +54,7 @@ gosh() (
     ############################################################################
     ## Helper Functions                                                       ##
     ############################################################################
-    show_help() { 
+    show_help() {
         echo "Usage:"
         echo "  gosh [-hv] [-l] [-aru] ..."
         echo "  gosh-go <bookmark>"
@@ -69,7 +69,7 @@ gosh() (
         echo "  gosh-go - Change dir to Bookmark's path."
     }
     show_version() {
-        echo "gosh - 0.1 - N2OMatt <n2omatt@amazingcow.com>"
+        echo "gosh - 0.1.1 - N2OMatt <n2omatt@amazingcow.com>"
         echo "Copyright (c) 2015 - Amazing Cow"
         echo "This is a free software (GPLv3) - Share/Hack it"
         echo "Check opensource.amazingcow.com for more :)"
@@ -78,7 +78,7 @@ gosh() (
     {
         echo "ERROR: ${1}";
     }
-    
+
     #File/Dir Functions.
     check_dir_and_files() {
         #Check if the rc folder exists.
@@ -87,21 +87,21 @@ gosh() (
             mkdir -p "${PATH_DIR_RC}"
         fi
         #Check if the file containing the data exists.
-        if [ ! -e "${PATH_FILE_RC}" ]; then 
+        if [ ! -e "${PATH_FILE_RC}" ]; then
             print_error "File ${PATH_FILE_RC} not found - creating one now."
             touch "${PATH_FILE_RC}"
-        fi  
+        fi
     }
     sort_file() {
         cat "${PATH_FILE_RC}" | sort > "${PATH_TEMP_FILE}";\
         mv "${PATH_TEMP_FILE}" ${PATH_FILE_RC}
     }
-    
+
     #Bookmark Functions.
     bookmark_exists() {
         #Check if already have a bookmark with the name.
         name=$1
-        if [[ -z $name ]]; then 
+        if [[ -z $name ]]; then
             return 1;
         fi
 
@@ -136,7 +136,7 @@ gosh() (
 
         #Check if the bookmark with this name already exists.
         bookmark_exists $name
-        if [[ $? == 0 ]]; then 
+        if [[ $? == 0 ]]; then
             print_error "Bookmark (${name}) already exists";
             fatal 1;
         fi
@@ -152,7 +152,7 @@ gosh() (
             print_error "Cannot add a bookmark (${name}) - path is invalid (${value})"
             fatal 1;
         fi
-        
+
         #Everything is ok...
         #Add the bookmark
         echo "${name} ${BOOKMARK_SEP} ${value}" >> $PATH_FILE_RC
@@ -168,11 +168,11 @@ gosh() (
 
         #Check if the bookmark with this name exists.
         bookmark_exists $name
-        if [[ $? != 0 ]]; then 
+        if [[ $? != 0 ]]; then
             print_error "Bookmark (${name}) does not exists";
             fatal 1;
         fi
-        
+
         #Search and print the inverse into a temp file.
         #Next move the temp file into the rc file.
         grep -v "${name}" "${PATH_FILE_RC}" > "${PATH_TEMP_FILE}";\
@@ -197,7 +197,7 @@ gosh() (
         name=$1;
         #Check if we have a bookmark with this name.
         bookmark_exists $name
-        if [[ $? != 0 ]]; then 
+        if [[ $? != 0 ]]; then
             print_error "Bookmark (${name}) does not exists";
             fatal 1;
         fi
@@ -216,7 +216,7 @@ gosh() (
             a) add_arg=${OPTARG}    ;;
             r) remove_arg=${OPTARG} ;;
             u) update_arg=${OPTARG} ;;
-            l) list_arg="true"      ;;         
+            l) list_arg="true"      ;;
             g) go_arg="true"        ;;
         esac
     done
@@ -233,20 +233,20 @@ gosh() (
     fi;
 
     #ADD
-    if [ -n "${add_arg}" ]; then 
+    if [ -n "${add_arg}" ]; then
         add $add_arg $@; exit 0
     fi;
     #REMOVE
     if [ -n "${remove_arg}" ]; then
-        remove $remove_arg; exit 0;     
+        remove $remove_arg; exit 0;
     fi;
     #UPDATE
     if [ -n "${update_arg}" ]; then
         update $update_arg $@; exit 0;
     fi;
     #LIST
-    if [ -n "${list_arg}" ]; then        
-        list; exit 0; 
+    if [ -n "${list_arg}" ]; then
+        list; exit 0;
     fi;
     #GO
     if [ -n "${go_arg}" ]; then
@@ -256,9 +256,9 @@ gosh() (
 
 gosh-go() {
 
-    if [ -n "${1}" ]; then         
+    if [ -n "${1}" ]; then
         path=$(gosh -g $1);
-        cd $path;
+        cd $path && pwd;
     else
         gosh -h;
     fi

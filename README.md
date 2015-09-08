@@ -99,6 +99,25 @@ Just source the file. This is usually more convenient to do in a ```.bashrc``` o
     source /path/to/gosh.sh
 ```
 
+or user the Makefile:
+
+```bash
+    make install 
+```
+
+To uninstall ```gosh``` using the makefile you can use:
+
+```bash
+    make uninstall
+```
+
+The install/uninstall recipe accepts the file that gosh will be sourced, the default is```~/.bash_profile```.   
+To specify other file use ```BASH_PROFILE=your_bash_profile_here```
+
+#####Note 
+The makefile will create backups before doing the operations.
+
+
 ## License:
 This software is released under GPLv3.
 
