@@ -1,1 +1,4 @@
-
+version 0.1.1
+[Sep 12 2015] - Gosh now prints the bookmarks and the paths in a more formatted way.
+		A option to disable the colored output is added, since now colored
+		output is the default.
