@@ -1,4 +1,9 @@
 version 0.1.1
 [Sep 12 2015] - Gosh now prints the bookmarks and the paths in a more formatted way.
-		A option to disable the colored output is added, since now colored
-		output is the default.
+        		A option to disable the colored output is added, since now colored
+		        output is the default.
+
+version 0.1.2
+[Sep 24 2015] - Change the makefile to perform a copy (cp) instead of link (ln).
+                Fix the colored output to work in all platforms.
+

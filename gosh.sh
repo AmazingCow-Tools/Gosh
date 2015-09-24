@@ -71,7 +71,7 @@ gosh() (
         echo "  gosh-go <bookmark> - Change dir to Bookmark's path."
     }
     show_version() {
-        echo "gosh - 0.1.1 - N2OMatt <n2omatt@amazingcow.com>"
+        echo "gosh - 0.1.2 - N2OMatt <n2omatt@amazingcow.com>"
         echo "Copyright (c) 2015 - Amazing Cow"
         echo "This is a free software (GPLv3) - Share/Hack it"
         echo "Check opensource.amazingcow.com for more :)"
