@@ -165,7 +165,7 @@ gosh() (
 
                 #Put colors...
                 if [ $NO_COLORS = false ]; then
-                    tput setf 2;
+                    tput setaf 2;
                 fi;
 
                 #Print the bookmark name.

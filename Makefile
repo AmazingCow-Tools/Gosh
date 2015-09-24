@@ -2,7 +2,7 @@ BASH_PROFILE=~/.bash_profile
 
 install:
 	#Install gosh.
-	sudo ln -f ./gosh.sh /usr/local/bin/gosh
+	cp -f ./gosh.sh /usr/local/bin/gosh
 
 	#Make the backup of the original bash_profile.
 	cp $(BASH_PROFILE) ~/.bash_profile_gosh_backup
