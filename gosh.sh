@@ -52,6 +52,7 @@ gosh() (
     BOOKMARK_SEP=":"
     NO_COLORS=false
 
+
     ############################################################################
     ## Helper Functions                                                       ##
     ############################################################################
@@ -125,6 +126,7 @@ gosh() (
     fatal() {
         exit $1;
     }
+
 
     ############################################################################
     ## Action Functions                                                       ##
@@ -214,7 +216,9 @@ gosh() (
         #Keep the file organized.
         sort_file
 
-        echo -e "\tAdded bookmark ${name} : ${value}";
+        #Print that bookmark was added.
+        echo "Added bookmark";
+        echo "  ${name} : ${value}";
     }
 
     remove() {
@@ -235,7 +239,9 @@ gosh() (
         #Keep the file organized.
         sort_file
 
-        echo -e "\tRemoved bookmark ${name}";
+        #Print that bookmark was added.
+        echo -e "Removed bookmark";
+        echo "  ${name}";
     }
 
     update() {
@@ -259,6 +265,7 @@ gosh() (
         path=$(path_for_bookmark $name);
         echo $path
     }
+
 
     ############################################################################
     ## Initialization                                                         ##
