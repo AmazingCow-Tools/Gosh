@@ -50,23 +50,25 @@ gosh() (
     PATH_TEMP_FILE="${PATH_DIR_RC}"/temp_goshrc.txt
 
     BOOKMARK_SEP=":"
+    NO_COLORS=false
 
     ############################################################################
     ## Helper Functions                                                       ##
     ############################################################################
     show_help() {
         echo "Usage:"
-        echo "  gosh [-hv] [-l] [-aru] ..."
+        echo "  gosh [-hv] [-ln] [-aru] ..."
         echo "  gosh-go <bookmark>"
         echo ""
-        echo "  -h : Show this screen."
-        echo "  -v : Show app version and copyright."
+        echo "  -h                   : Show this screen."
+        echo "  -v                   : Show app version and copyright."
         echo "  -a <Bookmark> <Path> : Add a Bookmark with specified path."
         echo "  -r <Bookmark>        : Remove a Bookmark."
         echo "  -u <Bookmark> <Path> : Update a Bookmark to path."
-        echo "  -l : Show all Bookmarks and Paths."
+        echo "  -l                   : Show all Bookmarks and Paths."
+        echo "  -n                   : Print the output without colors."
         echo ""
-        echo "  gosh-go - Change dir to Bookmark's path."
+        echo "  gosh-go <bookmark> - Change dir to Bookmark's path."
     }
     show_version() {
         echo "gosh - 0.1.1 - N2OMatt <n2omatt@amazingcow.com>"
@@ -128,7 +130,59 @@ gosh() (
     ## Action Functions                                                       ##
     ############################################################################
     list() {
-        cat $PATH_FILE_RC
+        file_contents=$(cat $PATH_FILE_RC);
+
+        #Turn the contents of file into an array without the : chars.
+        array=(${file_contents//:/ });
+
+        #Bookmark that has the greater name.
+        greater_length=0;
+
+        #Find the length of the name of the bookmark that has the longer name.
+        for index in "${!array[@]}"
+        do
+            #Bookmarks are located in even indexes.
+            if [ $((index % 2)) -eq 0 ]; then
+
+                value=${array[index]};    #Value of the array at index.
+                current_length=${#value}; #Lemgth of this bookmark name.
+                #Update the length if needed.
+                if [ $current_length -gt $greater_length ]; then
+                    greater_length=$current_length;
+                fi
+            fi
+        done
+
+        #Print the bookmarks...
+        for index in "${!array[@]}"
+        do
+            value=${array[index]}; #Current value of the array.
+
+            #Names are located in even indexes, paths in odd indexes.
+            if [ $((index % 2)) -eq 0 ]; then
+                current_length=${#value};
+                fmt="%-0$greater_length""s";
+
+                #Put colors...
+                if [ $NO_COLORS = false ]; then
+                    tput setf 2;
+                fi;
+
+                #Print the bookmark name.
+                printf $fmt $value;
+
+                #Put colors...
+                if [ $NO_COLORS = false ]; then
+                    tput sgr0;
+                fi;
+
+                #Print the separator.
+                printf " : ";
+
+            else
+                echo $value;
+            fi
+        done
     }
 
     add() {
@@ -209,7 +263,7 @@ gosh() (
     ############################################################################
     ## Initialization                                                         ##
     ############################################################################
-    while getopts "hva:r:u:lg" o; do
+    while getopts "hva:r:u:lgn" o; do
         case "${o}" in
             h) help_arg="true"      ;;
             v) version_arg="true"   ;;
@@ -218,6 +272,7 @@ gosh() (
             u) update_arg=${OPTARG} ;;
             l) list_arg="true"      ;;
             g) go_arg="true"        ;;
+            n) no_colors_arg="true" ;;
         esac
     done
     shift $((OPTIND-1))
@@ -230,6 +285,11 @@ gosh() (
     fi;
     if [ -n "${version_arg}" ]; then
         show_version; exit 0;
+    fi;
+
+    ##No Colors.
+    if [ -n "${no_colors_arg}" ]; then
+        NO_COLORS=true;
     fi;
 
     #ADD
