@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+#COWTODO: Add the license headers.
+
 import os;
 import os.path;
 import sys;
@@ -11,14 +13,17 @@ from termcolor import colored;
 ## Constants / Globals                                                        ##
 ################################################################################
 class Constants:
+    #COWTODO: Paths are wrong. They should be hidden.
     PATH_DIR_RC    = "~/cowgoshrc"
     PATH_FILE_RC   = os.path.expanduser(os.path.join(PATH_DIR_RC, "goshrc.txt"));
     PATH_TEMP_FILE = os.path.join(PATH_DIR_RC, "temp_goshrc.txt");
 
-    OUTPUT_META_CHAR = "#";
+    #COWTODO: Comment.
+    OUTPUT_META_CHAR   = "#";
     BOOKMARK_SEPARATOR = ":";
 
 class Globals:
+    #COWTODO: Comment.
     bookmarks = {};
     opt_no_colors = False;
 
@@ -50,6 +55,7 @@ class C:
 ## Read / Write Functions                                                     ##
 ################################################################################
 def read_bookmarks():
+    #COWTODO: Comment.
     for bookmark in open(Constants.PATH_FILE_RC):
         bookmark = bookmark.replace("\n", "");
         name, path = bookmark.split(Constants.BOOKMARK_SEPARATOR);
@@ -60,6 +66,8 @@ def read_bookmarks():
         Globals.bookmarks[name] = path;
 
 def write_bookmarks():
+    #COWTODO: Comment.
+    #COWTODO: Check if has a better and nicer way to achieve this.
     os.system("touch {}".format(Constants.PATH_TEMP_FILE));
     for key in sorted(Globals.bookmarks.keys()):
         os.system("echo \"{} : {}\" >> {}".format(key, 
@@ -100,6 +108,7 @@ def print_valid_output(msg):
     exit(0);
 
 def print_help():
+    #COWTODO: Update the msg.
     print """Usage:
   gosh [-hv] [-ln] [-aru] ...
   gosh-go <bookmark>
@@ -115,6 +124,7 @@ def print_help():
     exit(0);
 
 def print_version():
+    #COWTODO: Implement.
     print "version";
     exit(0);
     # "gosh - 0.1.2 - N2OMatt <n2omatt@amazingcow.com>"
@@ -124,6 +134,7 @@ def print_version():
  
 def get_terminal_width():
         return int(subprocess.check_output(['tput', 'cols']));
+
 
 ################################################################################
 ## Action Functions                                                           ##
@@ -223,7 +234,11 @@ def update_bookmark(name, path):
     write_bookmarks(); #Save to file
     exit(0);
 
+################################################################################
+## Script Initialization                                                      ##
+################################################################################
 def main():
+    #COWTODO: This shoud be at Constants class.
     ACTION_HELP    = "help";
     ACTION_VERSION = "version";
     ACTION_LIST    = "list";
@@ -231,6 +246,8 @@ def main():
     ACTION_ADD     = "add";
     ACTION_UPDATE  = "update";
 
+
+    #COWTODO: Comment and this is very ugly.
     args = sys.argv[1:]
     if(args[-1] == "no-colors"):
         Globals.opt_no_colors = True;
@@ -239,8 +256,6 @@ def main():
     first_arg  = args[0];
     second_arg = args[1] if len(args) > 1 else "";
     third_arg  = args[2] if len(args) > 2 else "";
-
-    # print_fatal(first_arg + " - " + second_arg + " - " + third_arg);
 
     #All the command line options are exclusive operations. i.e
     #they will run the requested command and exit after it.
