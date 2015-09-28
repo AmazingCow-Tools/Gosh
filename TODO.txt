@@ -1,5 +1,6 @@
 [DONE]#1 Make a todo.
 [DONE]#2 Put colors if available.
-#3 Better error cheking.
-#4 Check if possible make gosh-go better (accept options and all)
-#5 Make the add and remove ouput messages look better.
+[DONE]#3 Better error cheking.
+[DONE]#4 Check if possible make gosh-go better (accept options and all)
+[DONE]#5 Make the add and remove ouput messages look better.
+#6 - Add long options.

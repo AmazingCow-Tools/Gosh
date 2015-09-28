@@ -7,3 +7,16 @@ version 0.1.2
 [Sep 24 2015] - Change the makefile to perform a copy (cp) instead of link (ln).
                 Fix the colored output to work in all platforms.
 
+
+================================================================================
+== Start v0.2.x                                                               ==
+================================================================================
+version 0.2.0
+[Sep 28 2015] - Rewritten gosh. 
+                Now it is a two part program - gosh and gosh-core. 
+                As a good consequence we complete the TODO #3,4 and 5.
+                
+                Update the Makefile.
+                Now it will print the install/uninstall steps but not the commands.
+
+
