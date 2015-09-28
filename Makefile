@@ -42,27 +42,32 @@
 BASH_PROFILE=~/.bash_profile
 
 install:
-	#Install gosh.
-	cp -f ./gosh.sh /usr/local/bin/gosh
+	@ echo "Install gosh."
+	@ cp -f ./gosh-core.py  /usr/local/bin/gosh-core
+	@ cp -f ./gosh.sh       /usr/local/bin/gosh
 
-	#Make the backup of the original bash_profile.
-	cp $(BASH_PROFILE) ~/.bash_profile_gosh_backup
+	@ chmod 744 /usr/local/bin/gosh-core
+	@ chmod 744 /usr/local/bin/gosh
 
-	#Clean up everything about the gosh from file.
-	grep -vi gosh $(BASH_PROFILE) > ~/.gosh_temp
-	mv ~/.gosh_temp $(BASH_PROFILE)
+	@ echo "Make the backup of the original bash_profile."
+	@ cp $(BASH_PROFILE) ~/.bash_profile_gosh_backup
 
-	#Add the lines to source the gosh program.
-	echo "## AmazingCow - Gosh ##"    >> $(BASH_PROFILE)
-	echo "source /usr/local/bin/gosh" >> $(BASH_PROFILE)
+	@ echo "Clean up everything about the gosh from file."
+	@ grep -vi gosh $(BASH_PROFILE) > ~/.gosh_temp
+	@ mv ~/.gosh_temp $(BASH_PROFILE)
+
+	@ echo "Add the lines to source the gosh program."	
+	@ echo "## AmazingCow - Gosh ##"    >> $(BASH_PROFILE)
+	@ echo "source /usr/local/bin/gosh" >> $(BASH_PROFILE)
 
 uninstall:
-	#Remove gosh.
-	rm -f /usr/local/bin/gosh
+	@ echo "Remove gosh."
+	@ rm -f /usr/local/bin/gosh
+	@ rm -f /usr/local/bin/gosh-core
 
-	#Make the backup of the original bash_profile.
-	cp $(BASH_PROFILE) ~/.bash_profile_gosh_backup
+	@ echo "Make the backup of the original bash_profile."
+	@ cp $(BASH_PROFILE) ~/.bash_profile_gosh_backup
 
-	#Clean up everything about the gosh from file.
-	grep -vi gosh $(BASH_PROFILE) > ~/.gosh_temp
-	mv ~/.gosh_temp $(BASH_PROFILE)
+	@ echo "Clean up everything about the gosh from file."
+	@ grep -vi gosh $(BASH_PROFILE) > ~/.gosh_temp
+	@ mv ~/.gosh_temp $(BASH_PROFILE)
