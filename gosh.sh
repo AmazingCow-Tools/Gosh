@@ -4,8 +4,8 @@
 ##               ████████                                                     ##
 ##             ██        ██                                                   ##
 ##            ███  █  █  ███                                                  ##
-##            █ █        █ █                                                  ##
-##             ████████████         gosh.sh - Gosh                            ##
+##            █ █        █ █        gosh.sh                                   ##
+##             ████████████         Gosh                                      ##
 ##           █              █       Copyright (c) 2015 AmazingCow             ##
 ##          █     █    █     █      www.AmazingCow.com                        ##
 ##          █     █    █     █                                                ##
@@ -40,293 +40,97 @@
 ##                                  Enjoy :)                                  ##
 ##----------------------------------------------------------------------------##
 
+#Define some alias to ease the operations. 
+alias gosh-list="gosh -l";
+alias gosh-add="gosh -a";
+alias gosh-remove="gosh -r";
+alias gosh-update="gosh -u";
+alias gosh-go="gosh ";
 
-gosh() (
-    ############################################################################
-    ## Constants                                                              ##
-    ############################################################################
-    PATH_DIR_RC=~/cowgoshrc
-    PATH_FILE_RC="${PATH_DIR_RC}"/goshrc.txt
-    PATH_TEMP_FILE="${PATH_DIR_RC}"/temp_goshrc.txt
+function gosh
+{
+    local GOSH_CORE=gosh-core
 
-    BOOKMARK_SEP=":"
-    NO_COLORS=false
+    #The command line options that we can accept.
+    #They are set with 0 meaning that they're disabled.
+    #Only NO_COLORS options that are set with empty string
+    #because we gonna fill it with a string if user pass the option.
+    local OPT_HELP=0;
+    local OPT_VERSION=0;
+    local OPT_ADD=0;    
+    local OPT_REMOVE=0;
+    local OPT_UPDATE=0;
+    local OPT_LIST=0;
+    local OPT_NO_COLORS="";
+    
+    #No args, just list the bookmarks.
+    if [ $# -eq 0 ]; then
+        $GOSH_CORE "list";
+        return;
+    fi;
 
-
-    ############################################################################
-    ## Helper Functions                                                       ##
-    ############################################################################
-    show_help() {
-        echo "Usage:"
-        echo "  gosh [-hv] [-ln] [-aru] ..."
-        echo "  gosh-go <bookmark>"
-        echo ""
-        echo "  -h                   : Show this screen."
-        echo "  -v                   : Show app version and copyright."
-        echo "  -a <Bookmark> <Path> : Add a Bookmark with specified path."
-        echo "  -r <Bookmark>        : Remove a Bookmark."
-        echo "  -u <Bookmark> <Path> : Update a Bookmark to path."
-        echo "  -l                   : Show all Bookmarks and Paths."
-        echo "  -n                   : Print the output without colors."
-        echo ""
-        echo "  gosh-go <bookmark> - Change dir to Bookmark's path."
-    }
-    show_version() {
-        echo "gosh - 0.1.2 - N2OMatt <n2omatt@amazingcow.com>"
-        echo "Copyright (c) 2015 - Amazing Cow"
-        echo "This is a free software (GPLv3) - Share/Hack it"
-        echo "Check opensource.amazingcow.com for more :)"
-    }
-    print_error()
-    {
-        echo "ERROR: ${1}";
-    }
-
-    #File/Dir Functions.
-    check_dir_and_files() {
-        #Check if the rc folder exists.
-        if [ ! -e "${PATH_DIR_RC}" ]; then
-            print_error "Directory ${PATH_DIR_RC} not found - creating one now."
-            mkdir -p "${PATH_DIR_RC}"
-        fi
-        #Check if the file containing the data exists.
-        if [ ! -e "${PATH_FILE_RC}" ]; then
-            print_error "File ${PATH_FILE_RC} not found - creating one now."
-            touch "${PATH_FILE_RC}"
-        fi
-    }
-    sort_file() {
-        cat "${PATH_FILE_RC}" | sort > "${PATH_TEMP_FILE}";\
-        mv "${PATH_TEMP_FILE}" ${PATH_FILE_RC}
-    }
-
-    #Bookmark Functions.
-    bookmark_exists() {
-        #Check if already have a bookmark with the name.
-        name=$1
-        if [[ -z $name ]]; then
-            return 1;
-        fi
-
-        if [[ -n $(grep "^\b${name}\b" $PATH_FILE_RC) ]]; then
-            return 0
-        fi
-        return 1
-    }
-    path_for_bookmark() {
-        name=$1
-        v=$(grep "^\b${name}\b" $PATH_FILE_RC | cut -d"${BOOKMARK_SEP}" -f2);
-        echo $v;
-    }
-
-    #Other Functions.
-    expand_path() {
-        echo $(cd $1; pwd)
-    }
-    fatal() {
-        exit $1;
-    }
-
-
-    ############################################################################
-    ## Action Functions                                                       ##
-    ############################################################################
-    list() {
-        file_contents=$(cat $PATH_FILE_RC);
-
-        #Turn the contents of file into an array without the : chars.
-        array=(${file_contents//:/ });
-
-        #Bookmark that has the greater name.
-        greater_length=0;
-
-        #Find the length of the name of the bookmark that has the longer name.
-        for index in "${!array[@]}"
-        do
-            #Bookmarks are located in even indexes.
-            if [ $((index % 2)) -eq 0 ]; then
-
-                value=${array[index]};    #Value of the array at index.
-                current_length=${#value}; #Lemgth of this bookmark name.
-                #Update the length if needed.
-                if [ $current_length -gt $greater_length ]; then
-                    greater_length=$current_length;
-                fi
-            fi
-        done
-
-        #Print the bookmarks...
-        for index in "${!array[@]}"
-        do
-            value=${array[index]}; #Current value of the array.
-
-            #Names are located in even indexes, paths in odd indexes.
-            if [ $((index % 2)) -eq 0 ]; then
-                current_length=${#value};
-                fmt="%-0$greater_length""s";
-
-                #Put colors...
-                if [ $NO_COLORS = false ]; then
-                    tput setaf 2;
-                fi;
-
-                #Print the bookmark name.
-                printf $fmt $value;
-
-                #Put colors...
-                if [ $NO_COLORS = false ]; then
-                    tput sgr0;
-                fi;
-
-                #Print the separator.
-                printf " : ";
-
-            else
-                echo $value;
-            fi
-        done
-    }
-
-    add() {
-        name=$1;
-
-        #Check if the bookmark with this name already exists.
-        bookmark_exists $name
-        if [[ $? == 0 ]]; then
-            print_error "Bookmark (${name}) already exists";
-            fatal 1;
-        fi
-
-        #Check if we got a value to add and if it is a valid directory.
-        value=$2
-        if [[ -z $value ]]; then
-            print_error "Cannot add a bookmark (${name}) - missing path"
-            fatal 1;
-        fi
-        value=$(expand_path $2)
-        if [[ ! -d "$value" ]]; then
-            print_error "Cannot add a bookmark (${name}) - path is invalid (${value})"
-            fatal 1;
-        fi
-
-        #Everything is ok...
-        #Add the bookmark
-        echo "${name} ${BOOKMARK_SEP} ${value}" >> $PATH_FILE_RC
-
-        #Keep the file organized.
-        sort_file
-
-        #Print that bookmark was added.
-        echo "Added bookmark";
-        echo "  ${name} : ${value}";
-    }
-
-    remove() {
-        name=$1;
-
-        #Check if the bookmark with this name exists.
-        bookmark_exists $name
-        if [[ $? != 0 ]]; then
-            print_error "Bookmark (${name}) does not exists";
-            fatal 1;
-        fi
-
-        #Search and print the inverse into a temp file.
-        #Next move the temp file into the rc file.
-        grep -v "${name}" "${PATH_FILE_RC}" > "${PATH_TEMP_FILE}";\
-        mv "${PATH_TEMP_FILE}" ${PATH_FILE_RC}
-
-        #Keep the file organized.
-        sort_file
-
-        #Print that bookmark was added.
-        echo -e "Removed bookmark";
-        echo "  ${name}";
-    }
-
-    update() {
-        #Update is remove and add a bookmark.
-        remove $1
-        add $1 $2
-        #Keep the file organized.
-        sort_file
-    }
-
-    go()
-    {
-        name=$1;
-        #Check if we have a bookmark with this name.
-        bookmark_exists $name
-        if [[ $? != 0 ]]; then
-            print_error "Bookmark (${name}) does not exists";
-            fatal 1;
-        fi
-
-        path=$(path_for_bookmark $name);
-        echo $path
-    }
-
-
-    ############################################################################
-    ## Initialization                                                         ##
-    ############################################################################
-    while getopts "hva:r:u:lgn" o; do
-        case "${o}" in
-            h) help_arg="true"      ;;
-            v) version_arg="true"   ;;
-            a) add_arg=${OPTARG}    ;;
-            r) remove_arg=${OPTARG} ;;
-            u) update_arg=${OPTARG} ;;
-            l) list_arg="true"      ;;
-            g) go_arg="true"        ;;
-            n) no_colors_arg="true" ;;
+    #Parse the command line options.
+    while getopts :hvaruln FLAG; do        
+        case $FLAG in
+             h) OPT_HELP=1                ;;
+             v) OPT_VERSION=1             ;;
+             l) OPT_LIST=1                ;;
+             r) OPT_REMOVE=1              ;;
+             a) OPT_ADD=1                 ;;             
+             u) OPT_UPDATE=1              ;;             
+             n) OPT_NO_COLORS="no-colors" ;;
+            \?) OPT_HELP=1                ;;
         esac
     done
-    shift $((OPTIND-1))
+    shift $((OPTIND-1))  #This tells getopts to move on to the next argument.
 
-    check_dir_and_files
+    #COWTODO: Check if this is ok to do?
+    unset OPTARG;
+    unset OPTIND;
+    
+    #Start checking with command line options were give.
+    #All options are exclusive, meaning that they'll run and exit after.
+    if   [ $OPT_HELP    = 1 ]; then $GOSH_CORE "help";
+    elif [ $OPT_VERSION = 1 ]; then $GOSH_CORE "version";        
+    elif [ $OPT_LIST    = 1 ]; then $GOSH_CORE "list"         $OPT_NO_COLORS;
+    elif [ $OPT_REMOVE  = 1 ]; then $GOSH_CORE "remove" $1    $OPT_NO_COLORS;
+    elif [ $OPT_ADD     = 1 ]; then $GOSH_CORE "add"    $1 $2 $OPT_NO_COLORS;
+    elif [ $OPT_UPDATE  = 1 ]; then $GOSH_CORE "update" $1 $2 $OPT_NO_COLORS;
+        
+    #If we fall in this "else" clause means that we didn't passed any 
+    #command line options, but instead passed a bookmark name. 
+    #This can result in two possible outcomes.
+    #   1 - A bookmark was found with this name, so we must change the dir.
+    #   2 - No bookmark was found, so we must present a error message.
+    #Since all the logic are in gosh-core, but we must change the directory 
+    #in this script, we must have a way to check if the Bookmark name was valid
+    #or not. To do this we put the result of gosh-core in a string bundled with
+    #a return value, a separator and a error message or valid path.
+    #The return value is:
+    #  0 - If path is valid.
+    #  1 - If a error message must be displayed. 
+    else 
+        GOSH_CMD=$($GOSH_CORE $1 $OPT_NO_COLORS);
+        RET_VAL=$(echo $GOSH_CMD | cut -d"#" -f1);
+        RET_STR=$(echo $GOSH_CMD | cut -d"#" -f2);
 
-    #Help/Version.
-    if [ -n "${help_arg}" ]; then
-        show_help; exit 0;
-    fi;
-    if [ -n "${version_arg}" ]; then
-        show_version; exit 0;
-    fi;
+        #We have a valid path.
+        if [[ $RET_VAL = 0 ]]; then
+            cd $RET_STR;
+            
+            #Print the path...
+            echo -n "Gosh: "; 
+            tput setaf 5; 
+            echo $RET_STR;
+            tput sgr0;
 
-    ##No Colors.
-    if [ -n "${no_colors_arg}" ]; then
-        NO_COLORS=true;
-    fi;
-
-    #ADD
-    if [ -n "${add_arg}" ]; then
-        add $add_arg $@; exit 0
-    fi;
-    #REMOVE
-    if [ -n "${remove_arg}" ]; then
-        remove $remove_arg; exit 0;
-    fi;
-    #UPDATE
-    if [ -n "${update_arg}" ]; then
-        update $update_arg $@; exit 0;
-    fi;
-    #LIST
-    if [ -n "${list_arg}" ]; then
-        list; exit 0;
-    fi;
-    #GO
-    if [ -n "${go_arg}" ]; then
-        go $@; exit 0;
-    fi;
-)
-
-gosh-go() {
-
-    if [ -n "${1}" ]; then
-        path=$(gosh -g $1);
-        cd $path && pwd;
-    else
-        gosh -h;
-    fi
+            return;
+        
+        #We have a error message.
+        else
+            echo $RET_STR;
+            return;
+        fi;
+    
+    fi; # From starting checking command line options...
 }
