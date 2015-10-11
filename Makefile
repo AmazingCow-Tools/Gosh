@@ -40,7 +40,7 @@
 ##----------------------------------------------------------------------------##
 
 BASH_PROFILE=~/.bash_profile
-BASH_COMPLETION_DIR=/etc/bash_completion
+BASH_COMPLETION_DIR=`pkg-config --variable=completionsdir bash-completion`
 
 install:
 	@ echo "---> Install gosh."
@@ -63,8 +63,7 @@ install:
 
 	@echo "\n---> Install the bash completion script at ($(BASH_COMPLETION_DIR))."
 	@if [ -d $(BASH_COMPLETION_DIR) ]; then \
-	   echo "cp -f ./_gosh.sh $(BASH_COMPLETION_DIR)"; \
-	   cp -f ./_gosh.sh $(BASH_COMPLETION_DIR); \
+	   cp -f ././gosh_bash-completion.sh $(BASH_COMPLETION_DIR)/gosh.sh; \
 	else \
 	   echo "[SKIPPING] $(BASH_COMPLETION_DIR) does not exists..."; \
 	   echo "You may want set BASH_COMPLETION_DIR to the actual dir."; \
@@ -86,9 +85,8 @@ uninstall:
 	mv ~/.gosh_temp $(BASH_PROFILE)
 
 	@echo "\n---> Remove the bash completion script at ($(BASH_COMPLETION_DIR))."
-	@if [ -f $(BASH_COMPLETION_DIR)/_gosh.sh ]; then \
-	   echo "rm -f $(BASH_COMPLETION_DIR)/_gosh.sh"; \
-	   rm -f $(BASH_COMPLETION_DIR)/_gosh.sh; \
+	@if [ -f $(BASH_COMPLETION_DIR)/gosh.sh ]; then \
+	   rm -f $(BASH_COMPLETION_DIR)/gosh.sh; \
 	else \
 	   echo "[SKIPPING] $(BASH_COMPLETION_DIR)/_gosh.sh does not exists..."; \
 	   echo "You may want set BASH_COMPLETION_DIR to the actual dir."; \

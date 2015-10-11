@@ -48,7 +48,6 @@ _gosh()
     prev="${COMP_WORDS[COMP_CWORD-1]}"
     opts="$(gosh-core list no-colors)" #List in short way without colors.
 
-
     if [[ ${cur} == * ]] ; then
         COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
         return 0
