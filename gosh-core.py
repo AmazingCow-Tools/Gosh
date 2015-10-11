@@ -356,7 +356,7 @@ def update_bookmark(name, path):
 def main():
     #gosh will pass as last parameter with user want color or not.
     #So we grab this information and remove them from list because
-    #The other options will use the lenght of the list as a way to check
+    #The other options will use the length of the list as a way to check
     #if the arguments are ok.
     args = sys.argv[1:]
     if(args[-1] == "no-colors"):
