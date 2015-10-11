@@ -190,6 +190,29 @@ def path_for_bookmark(name):
     read_bookmarks();
     return Globals.bookmarks[name];
 
+def ensure_valid_bookmark_name_or_die(name):
+    #Check if name isn't empty...
+    if(name is None or len(name) == 0):
+        print_fatal("Missing arguments - name");
+
+    #Check if this name is a valid name.
+    if(((Constants.OUTPUT_META_CHAR   in name) or
+        (Constants.BOOKMARK_SEPARATOR in name))):
+        print_fatal("{} ('{}', '{}') chars.".format("Bookmark name cannot contains",
+                                                    Constants.OUTPUT_META_CHAR,
+                                                    Constants.BOOKMARK_SEPARATOR));
+
+def ensure_valid_path_or_die(path):
+    if(not os.path.isdir(path)):
+        print_fatal("Path ({}) is invalid.".format(C.magenta(path)));
+
+
+def ensure_bookmark_existance_or_die(name, bookmark_shall_exists):
+    if(bookmark_exists(name) and bookmark_shall_exists == False):
+        print_fatal("Bookmark ({}) already exists.".format(C.blue(name)));
+
+    if(not bookmark_exists(name) and bookmark_shall_exists == True):
+        print_fatal("Bookmark ({}) doesn't exists.".format(C.blue(name)));
 
 ################################################################################
 ## Print Functions                                                            ##
@@ -265,28 +288,18 @@ def list_bookmarks(long = False):
     exit(0);
 
 def add_bookmark(name, path):
-    #Check if name isn't empty...
-    if(name is None or len(name) == 0):
-        print_fatal("Missing arguments - name");
-
-    #Check if this name is a valid name.
-    if(((Constants.OUTPUT_META_CHAR   in name) or
-        (Constants.BOOKMARK_SEPARATOR in name))):
-        print_fatal("{} '{}', '{}' chars.".format("Bookmark name cannot contain",
-                                                  Constants.OUTPUT_META_CHAR,
-                                                  Constants.BOOKMARK_SEPARATOR));
+    #Must be valid name.
+    ensure_valid_bookmark_name_or_die(name);
 
     #Load from file.
     read_bookmarks();
 
     #Check if we have this bookmark, since we are adding we cannot have it.
-    if(bookmark_exists(name)):
-        print_fatal("Bookmark ({}) already exists.".format(C.blue(name)));
+    ensure_bookmark_existance_or_die(name, bookmark_shall_exists=False);
 
     #Check if path is valid path.
     abs_path = os.path.abspath(os.path.expanduser(path));
-    if(not os.path.isdir(abs_path)):
-        print_fatal("Path ({}) is invalid.".format(C.magenta(abs_path)));
+    ensure_valid_path_or_die(abs_path);
 
     #Name and Path are valid... Add it and inform the user.
     Globals.bookmarks[name] = abs_path;
@@ -298,21 +311,14 @@ def add_bookmark(name, path):
     exit(0);
 
 def remove_bookmark(name):
-    #Check if name isn't empty...
-    if(name is None or len(name) == 0):
-        print_fatal("Missing arguments - name");
+    #Must be valid name.
+    ensure_valid_bookmark_name_or_die(name);
 
-    #Check if this name is a valid name.
-    if(((Constants.OUTPUT_META_CHAR   in name) or
-        (Constants.BOOKMARK_SEPARATOR in name))):
-        print_fatal("{} '{}', '{}' chars.".format("Bookmark name cannot contain",
-                                                  Constants.OUTPUT_META_CHAR,
-                                                  Constants.BOOKMARK_SEPARATOR));
-    read_bookmarks(); #Load from file.
+    #Load from file.
+    read_bookmarks();
 
     #Check if we actually have a bookmark with this name.
-    if(not bookmark_exists(name)):
-        print_fatal("Bookmark ({}) doesn't exists.".format(C.blue(name)));
+    ensure_bookmark_existance_or_die(name, bookmark_shall_exists=True);
 
     #Bookmark exists... Remove it and inform the user.
     del Globals.bookmarks[name];
@@ -322,29 +328,18 @@ def remove_bookmark(name):
     exit(0);
 
 def update_bookmark(name, path):
-    #Check if name isn't empty...
-    if(name is None or len(name) == 0):
-        print_fatal("Missing arguments - name");
-
-    #Check if this name is a valid name.
-    if(((Constants.OUTPUT_META_CHAR   in name) or
-        (Constants.BOOKMARK_SEPARATOR in name))):
-        print_fatal("{} '{}', '{}' chars.".format("Bookmark name cannot contain",
-                                                  Constants.OUTPUT_META_CHAR,
-                                                  Constants.BOOKMARK_SEPARATOR));
+    #Must be valid name.
+    ensure_valid_bookmark_name_or_die(name);
 
     #Load from file.
     read_bookmarks();
 
     #Check if we have this bookmark, since we are updating we must have it.
-    if(not bookmark_exists(name)):
-        print_fatal("Bookmark ({}) doesn't exists.".format(C.blue(name)));
-
+    ensure_bookmark_existance_or_die(name, bookmark_shall_exists=True);
 
     #Check if path is valid path.
     abs_path = os.path.abspath(os.path.expanduser(path));
-    if(not os.path.isdir(abs_path)):
-        print_fatal("Path ({}) is invalid.".format(C.magenta(abs_path)));
+    ensure_valid_path_or_die(abs_path);
 
     #Bookmark exists and path is valid... Update it and inform the user.
     Globals.bookmarks[name] = abs_path;
@@ -434,4 +429,4 @@ if(__name__ == "__main__"):
     try:
         main();
     except Exception, e:
-        print_fatal("You should use gosh not gosh-core.");
+        print_fatal("You should use gosh not gosh-core. {}".format(e));
