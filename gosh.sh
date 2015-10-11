@@ -61,6 +61,7 @@ function gosh
     local OPT_REMOVE=0;
     local OPT_UPDATE=0;
     local OPT_LIST=0;
+    local OPT_LIST_LONG=0;
     local OPT_NO_COLORS="";
     
     #No args, just list the bookmarks.
@@ -70,11 +71,12 @@ function gosh
     fi;
 
     #Parse the command line options.
-    while getopts :hvaruln FLAG; do        
+    while getopts :hvarulLn FLAG; do        
         case $FLAG in
              h) OPT_HELP=1                ;;
              v) OPT_VERSION=1             ;;
              l) OPT_LIST=1                ;;
+             L) OPT_LIST_LONG=1           ;;
              r) OPT_REMOVE=1              ;;
              a) OPT_ADD=1                 ;;             
              u) OPT_UPDATE=1              ;;             
@@ -90,12 +92,13 @@ function gosh
     
     #Start checking with command line options were give.
     #All options are exclusive, meaning that they'll run and exit after.
-    if   [ $OPT_HELP    = 1 ]; then $GOSH_CORE "help";
-    elif [ $OPT_VERSION = 1 ]; then $GOSH_CORE "version";        
-    elif [ $OPT_LIST    = 1 ]; then $GOSH_CORE "list"         $OPT_NO_COLORS;
-    elif [ $OPT_REMOVE  = 1 ]; then $GOSH_CORE "remove" $1    $OPT_NO_COLORS;
-    elif [ $OPT_ADD     = 1 ]; then $GOSH_CORE "add"    $1 $2 $OPT_NO_COLORS;
-    elif [ $OPT_UPDATE  = 1 ]; then $GOSH_CORE "update" $1 $2 $OPT_NO_COLORS;
+    if   [ $OPT_HELP      = 1 ]; then $GOSH_CORE "help";
+    elif [ $OPT_VERSION   = 1 ]; then $GOSH_CORE "version";        
+    elif [ $OPT_LIST      = 1 ]; then $GOSH_CORE "list"         $OPT_NO_COLORS;
+    elif [ $OPT_LIST_LONG = 1 ]; then $GOSH_CORE "list-long"    $OPT_NO_COLORS;
+    elif [ $OPT_REMOVE    = 1 ]; then $GOSH_CORE "remove" $1    $OPT_NO_COLORS;
+    elif [ $OPT_ADD       = 1 ]; then $GOSH_CORE "add"    $1 $2 $OPT_NO_COLORS;
+    elif [ $OPT_UPDATE    = 1 ]; then $GOSH_CORE "update" $1 $2 $OPT_NO_COLORS;
         
     #If we fall in this "else" clause means that we didn't passed any 
     #command line options, but instead passed a bookmark name. 

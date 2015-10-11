@@ -62,12 +62,13 @@ class Constants:
     BOOKMARK_SEPARATOR = ":";
 
     #Kind of getopt flags but fixed in positions. 
-    ACTION_HELP    = "help";
-    ACTION_VERSION = "version";
-    ACTION_LIST    = "list";
-    ACTION_REMOVE  = "remove";
-    ACTION_ADD     = "add";
-    ACTION_UPDATE  = "update";
+    ACTION_HELP      = "help";
+    ACTION_VERSION   = "version";
+    ACTION_LIST      = "list";
+    ACTION_LIST_LONG = "list-long";
+    ACTION_REMOVE    = "remove";
+    ACTION_ADD       = "add";
+    ACTION_UPDATE    = "update";
 
 
 class Globals:
@@ -201,7 +202,7 @@ def print_valid_output(msg):
 def print_help():
     print """Usage:
   gosh <Name>
-  gosh [-hv] [-n] [-l] [-au <Name> <Path>] [-r <Name>]
+  gosh [-hv] [-n] [-lL] [-au <Name> <Path>] [-r <Name>]
 
 Options:
  *-h               : Show this screen.
@@ -209,7 +210,8 @@ Options:
  *-a <Name> <Path> : Add a Bookmark with specified path.
  *-r <Name>        : Remove a Bookmark.
  *-u <Name> <Path> : Update a Bookmark to path.
- *-l               : Show all Bookmarks and Paths.
+ *-l               : Show all Bookmarks (no Paths).
+ *-L               : Show all Bookmarks and Paths.
   -n               : Print the output without colors.
 
 Notes:
@@ -232,7 +234,7 @@ def print_version():
 ################################################################################
 ## Action Functions                                                           ##
 ################################################################################
-def list_bookmarks():
+def list_bookmarks(long = False):
     read_bookmarks();
 
     if(len(Globals.bookmarks) == 0):
@@ -246,9 +248,13 @@ def list_bookmarks():
         spaces = " " * (max_len - len(key)); #Put spaces to align the names.
         path   = Globals.bookmarks[key];
 
-        print "{_key}{_spaces} : {_path}".format(_key=C.blue(key),
-                                                 _spaces=spaces,
-                                                 _path=C.magenta(path));    
+        if(long):
+            print "{_key}{_spaces} : {_path}".format(_key=C.blue(key),
+                                                     _spaces=spaces,
+                                                     _path=C.magenta(path));
+        else:
+            print C.blue(key);
+            
     exit(0);
 
 def add_bookmark(name, path):    
@@ -336,12 +342,13 @@ def main():
 
     #All the command line options are exclusive operations. i.e
     #they will run the requested command and exit after it.
-    if(Constants.ACTION_HELP    == first_arg): print_help();
-    if(Constants.ACTION_VERSION == first_arg): print_version();
-    if(Constants.ACTION_LIST    == first_arg): list_bookmarks();
-    if(Constants.ACTION_REMOVE  == first_arg): remove_bookmark(second_arg);
-    if(Constants.ACTION_ADD     == first_arg): add_bookmark(second_arg, third_arg);
-    if(Constants.ACTION_UPDATE  == first_arg): update_bookmark(second_arg, third_arg);
+    if(Constants.ACTION_HELP      == first_arg): print_help();
+    if(Constants.ACTION_VERSION   == first_arg): print_version();
+    if(Constants.ACTION_LIST      == first_arg): list_bookmarks();
+    if(Constants.ACTION_LIST_LONG == first_arg): list_bookmarks(long=True);
+    if(Constants.ACTION_REMOVE    == first_arg): remove_bookmark(second_arg);
+    if(Constants.ACTION_ADD       == first_arg): add_bookmark(second_arg, third_arg);
+    if(Constants.ACTION_UPDATE    == first_arg): update_bookmark(second_arg, third_arg);
 
 
     #No command line options were found so it means that user is trying 
