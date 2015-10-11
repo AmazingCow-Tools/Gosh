@@ -46,7 +46,14 @@ import os;
 import os.path;
 import sys;
 import getopt;
-import termcolor;
+
+#Termcolor isn't a standard module (but is really nice), so we must
+#support system that doens't has it. On those systems the colored, 
+#will just return the plain string.
+try:
+    from termcolor import colored;
+except Exception, e:
+    def colored(msg, color): return msg;
 
 ################################################################################
 ## Constants / Globals                                                        ##
@@ -95,7 +102,7 @@ class C:
     @staticmethod 
     def __colored(msg, color):
         if(not Globals.opt_no_colors):
-            return termcolor.colored(msg, color);
+            return colored(msg, color);
         return msg;
 
 
