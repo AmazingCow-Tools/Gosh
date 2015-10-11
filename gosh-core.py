@@ -48,7 +48,7 @@ import sys;
 import getopt;
 
 #Termcolor isn't a standard module (but is really nice), so we must
-#support system that doens't has it. On those systems the colored, 
+#support system that doens't has it. On those systems the colored,
 #will just return the plain string.
 try:
     from termcolor import colored;
@@ -59,7 +59,7 @@ except Exception, e:
 ## Constants / Globals                                                        ##
 ################################################################################
 class Constants:
-    #Where the bookmarks will be stored. 
+    #Where the bookmarks will be stored.
     PATH_DIR_RC  = "~/.cowgoshrc"
     PATH_FILE_RC = os.path.expanduser(os.path.join(PATH_DIR_RC, "goshrc.txt"));
 
@@ -68,7 +68,7 @@ class Constants:
     OUTPUT_META_CHAR   = "#";
     BOOKMARK_SEPARATOR = ":";
 
-    #Kind of getopt flags but fixed in positions. 
+    #Kind of getopt flags but fixed in positions.
     ACTION_HELP      = "help";
     ACTION_VERSION   = "version";
     ACTION_LIST      = "list";
@@ -90,16 +90,16 @@ class C:
     @staticmethod
     def red(msg):
         return C.__colored(msg, "red");
-    
+
     @staticmethod
     def blue(msg):
         return C.__colored(msg, "blue");
-    
+
     @staticmethod
     def magenta(msg):
         return C.__colored(msg, "magenta");
 
-    @staticmethod 
+    @staticmethod
     def __colored(msg, color):
         if(not Globals.opt_no_colors):
             return colored(msg, color);
@@ -124,20 +124,20 @@ def read_bookmarks():
     #   BookmarkName : BookmarkSeparator (Note that the ':' is the separator)
     try:
         bookmarks_file = open(Constants.PATH_FILE_RC);
-        
+
         for bookmark in bookmarks_file.readlines():
             bookmark = bookmark.replace("\n", "");
             name, path = bookmark.split(Constants.BOOKMARK_SEPARATOR);
-    
-            #Trim all white spaces.        
+
+            #Trim all white spaces.
             name = name.replace(" ", "");
             path = path.replace(" ", "");
 
             Globals.bookmarks[name] = path;
-    
+
     except Exception, e:
         #Failed to unpack, this is because the bookmarks aren't in form of
-        #   Name SEPARATOR Path. 
+        #   Name SEPARATOR Path.
         #So state it to user, so he could correct manually.
         help_msg = "{} {} {} {}".format("Check if all values are in form of",
                                         C.blue("BookmarkName"),
@@ -169,8 +169,8 @@ def write_bookmarks():
 
     except Exception, e:
         print_fatal("Error while writing file. {}".format(str(e)));
-    
-    finally:        
+
+    finally:
         bookmarks_file.close();
 
 
@@ -183,7 +183,7 @@ def checked_system(cmd, expected_val = 0):
         print_fatal("Error while executing command ({}).".format(C.red(cmd)));
 
 def bookmark_exists(name):
-    read_bookmarks(); 
+    read_bookmarks();
     return name in Globals.bookmarks.keys();
 
 def path_for_bookmark(name):
@@ -223,7 +223,7 @@ Options:
 
 Notes:
   If <Path> is blank the current dir is assumed.
-  
+
   Options marked with * are exclusive, i.e. the gosh will run that
   and exit successfully after the operation.
 """
@@ -236,7 +236,7 @@ def print_version():
         "This is a free software (GPLv3) - Share/Hack it",
         "Check opensource.amazingcow.com for more :)"]);
     exit(0);
- 
+
 
 ################################################################################
 ## Action Functions                                                           ##
@@ -248,7 +248,7 @@ def list_bookmarks(long = False):
         print "No bookmarks yet... :/";
         exit(0);
 
-    #Get the greater bookmark's name length. It will 
+    #Get the greater bookmark's name length. It will
     #be used to align all the bookmark's name.
     max_len = max(map(len, Globals.bookmarks.keys()));
     for key in sorted(Globals.bookmarks.keys()):
@@ -261,20 +261,27 @@ def list_bookmarks(long = False):
                                                      _path=C.magenta(path));
         else:
             print C.blue(key);
-            
+
     exit(0);
 
-def add_bookmark(name, path):    
-    read_bookmarks(); #Load from file.
+def add_bookmark(name, path):
+    #Check if name isn't empty...
+    if(name is None or len(name) == 0):
+        print_fatal("Missing arguments - name");
+
+    #Check if this name is a valid name.
+    if(((Constants.OUTPUT_META_CHAR   in name) or
+        (Constants.BOOKMARK_SEPARATOR in name))):
+        print_fatal("{} '{}', '{}' chars.".format("Bookmark name cannot contain",
+                                                  Constants.OUTPUT_META_CHAR,
+                                                  Constants.BOOKMARK_SEPARATOR));
+
+    #Load from file.
+    read_bookmarks();
 
     #Check if we have this bookmark, since we are adding we cannot have it.
     if(bookmark_exists(name)):
-        print_fatal("Bookmark ({}) already exists.".format(C.blue(name)));                                                    
-
-    #Check if this name is a valid name.
-    if(Constants.OUTPUT_META_CHAR in name):
-        print_fatal("{} '{}' char.".format("Bookmark name cannot contain",
-                                           Constants.OUTPUT_META_CHAR));
+        print_fatal("Bookmark ({}) already exists.".format(C.blue(name)));
 
     #Check if path is valid path.
     abs_path = os.path.abspath(os.path.expanduser(path));
@@ -291,11 +298,21 @@ def add_bookmark(name, path):
     exit(0);
 
 def remove_bookmark(name):
+    #Check if name isn't empty...
+    if(name is None or len(name) == 0):
+        print_fatal("Missing arguments - name");
+
+    #Check if this name is a valid name.
+    if(((Constants.OUTPUT_META_CHAR   in name) or
+        (Constants.BOOKMARK_SEPARATOR in name))):
+        print_fatal("{} '{}', '{}' chars.".format("Bookmark name cannot contain",
+                                                  Constants.OUTPUT_META_CHAR,
+                                                  Constants.BOOKMARK_SEPARATOR));
     read_bookmarks(); #Load from file.
 
     #Check if we actually have a bookmark with this name.
     if(not bookmark_exists(name)):
-        print_fatal("Bookmark ({}) doesn't exists.".format(C.blue(name)));   
+        print_fatal("Bookmark ({}) doesn't exists.".format(C.blue(name)));
 
     #Bookmark exists... Remove it and inform the user.
     del Globals.bookmarks[name];
@@ -305,16 +322,24 @@ def remove_bookmark(name):
     exit(0);
 
 def update_bookmark(name, path):
-    read_bookmarks(); #Load from file.
+    #Check if name isn't empty...
+    if(name is None or len(name) == 0):
+        print_fatal("Missing arguments - name");
+
+    #Check if this name is a valid name.
+    if(((Constants.OUTPUT_META_CHAR   in name) or
+        (Constants.BOOKMARK_SEPARATOR in name))):
+        print_fatal("{} '{}', '{}' chars.".format("Bookmark name cannot contain",
+                                                  Constants.OUTPUT_META_CHAR,
+                                                  Constants.BOOKMARK_SEPARATOR));
+
+    #Load from file.
+    read_bookmarks();
 
     #Check if we have this bookmark, since we are updating we must have it.
     if(not bookmark_exists(name)):
-        print_fatal("Bookmark ({}) doesn't exists.".format(C.blue(name)));   
+        print_fatal("Bookmark ({}) doesn't exists.".format(C.blue(name)));
 
-    #Check if this name is a valid name.
-    if(Constants.OUTPUT_META_CHAR in name):
-        print_fatal("{} '{}' char.".format("Bookmark name cannot contain",
-                                           Constants.OUTPUT_META_CHAR));
 
     #Check if path is valid path.
     abs_path = os.path.abspath(os.path.expanduser(path));
@@ -333,7 +358,7 @@ def update_bookmark(name, path):
 ################################################################################
 ## Script Initialization                                                      ##
 ################################################################################
-def main():    
+def main():
     #gosh will pass as last parameter with user want color or not.
     #So we grab this information and remove them from list because
     #The other options will use the lenght of the list as a way to check
@@ -349,26 +374,31 @@ def main():
 
     #All the command line options are exclusive operations. i.e
     #they will run the requested command and exit after it.
+    #Help / Version.
     if(Constants.ACTION_HELP      == first_arg): print_help();
     if(Constants.ACTION_VERSION   == first_arg): print_version();
+
+    #List.
     if(Constants.ACTION_LIST      == first_arg): list_bookmarks();
     if(Constants.ACTION_LIST_LONG == first_arg): list_bookmarks(long=True);
+
+    #Remove / Add / Update.
     if(Constants.ACTION_REMOVE    == first_arg): remove_bookmark(second_arg);
-    if(Constants.ACTION_ADD       == first_arg): add_bookmark(second_arg, third_arg);
+    if(Constants.ACTION_ADD       == first_arg): add_bookmark   (second_arg, third_arg);
     if(Constants.ACTION_UPDATE    == first_arg): update_bookmark(second_arg, third_arg);
 
 
-    #No command line options were found so it means that user is trying 
-    #to go to a bookmark location. But since this program is not a stand 
-    #alone program, it actually don't go to the requested location, it 
-    #will just 'print' the bookmark's path. 
+    #No command line options were found so it means that user is trying
+    #to go to a bookmark location. But since this program is not a stand
+    #alone program, it actually don't go to the requested location, it
+    #will just 'print' the bookmark's path.
     #By 'printing' the location we enable the gosh shell script to 'capture'
     #the 'printed' location and actually change the directory.
     #
     #But we have caveat here, the gosh shell script must be able to recognize
-    #the valid output i.e. the bookmark's path from the error output i.e. the 
-    #stuff that must be show to user but isn't a path. 
-    #To do this we decide to set the '#' character as a meta character that 
+    #the valid output i.e. the bookmark's path from the error output i.e. the
+    #stuff that must be show to user but isn't a path.
+    #To do this we decide to set the '#' character as a meta character that
     #has the meaning of be a separator. This way we pass a return value followed
     #by the "#" and the message | path.
     #
@@ -379,7 +409,7 @@ def main():
     #And any invalid output will be printed as:
     #  1#ERROR MESSAGE - Where: 1 is the return value for gosh shell script.
     #                           # is the separator.
-    #                           ERROR MESSAGE is the error message. :O 
+    #                           ERROR MESSAGE is the error message. :O
     if(not bookmark_exists(first_arg)):
         msg = "Bookmark ({}) doesn't exists.".format(C.blue(first_arg));
         print_invalid_output(msg);
@@ -390,7 +420,7 @@ def main():
         msg = "Bookmark ({}) {} ({})".format(C.blue(first_arg),
                                              "exists but it's path is invalid.",
                                              C.magenta(bookmark_path));
-        print_invalid_output(msg);        
+        print_invalid_output(msg);
 
     #Bookmark and path are valid.
     #Print the path to gosh shell script change the directory.
@@ -398,10 +428,10 @@ def main():
 
 
 if(__name__ == "__main__"):
-    #If any error occurs in main, means that user is trying to use 
-    #the gosh-core instead of gosh. Since gosh always pass the parameters 
+    #If any error occurs in main, means that user is trying to use
+    #the gosh-core instead of gosh. Since gosh always pass the parameters
     #even user didn't. So inform the user that the correct is use gosh.
     try:
         main();
-    except Exception, e:        
+    except Exception, e:
         print_fatal("You should use gosh not gosh-core.");
