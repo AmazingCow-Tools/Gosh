@@ -40,7 +40,7 @@
 ##                                  Enjoy :)                                  ##
 ##----------------------------------------------------------------------------##
 
-#Define some alias to ease the operations. 
+#Define some alias to ease the operations.
 alias gosh-list="gosh -l";
 alias gosh-add="gosh -a";
 alias gosh-remove="gosh -r";
@@ -57,13 +57,13 @@ function gosh
     #because we gonna fill it with a string if user pass the option.
     local OPT_HELP=0;
     local OPT_VERSION=0;
-    local OPT_ADD=0;    
+    local OPT_ADD=0;
     local OPT_REMOVE=0;
     local OPT_UPDATE=0;
     local OPT_LIST=0;
     local OPT_LIST_LONG=0;
     local OPT_NO_COLORS="";
-    
+
     #No args, just list the bookmarks.
     if [ $# -eq 0 ]; then
         $GOSH_CORE "list";
@@ -71,15 +71,15 @@ function gosh
     fi;
 
     #Parse the command line options.
-    while getopts :hvarulLn FLAG; do        
+    while getopts :hvarulLn FLAG; do
         case $FLAG in
              h) OPT_HELP=1                ;;
              v) OPT_VERSION=1             ;;
              l) OPT_LIST=1                ;;
              L) OPT_LIST_LONG=1           ;;
              r) OPT_REMOVE=1              ;;
-             a) OPT_ADD=1                 ;;             
-             u) OPT_UPDATE=1              ;;             
+             a) OPT_ADD=1                 ;;
+             u) OPT_UPDATE=1              ;;
              n) OPT_NO_COLORS="no-colors" ;;
             \?) OPT_HELP=1                ;;
         esac
@@ -89,30 +89,30 @@ function gosh
     #COWTODO: Check if this is ok to do?
     unset OPTARG;
     unset OPTIND;
-    
+
     #Start checking with command line options were give.
     #All options are exclusive, meaning that they'll run and exit after.
     if   [ $OPT_HELP      = 1 ]; then $GOSH_CORE "help";
-    elif [ $OPT_VERSION   = 1 ]; then $GOSH_CORE "version";        
+    elif [ $OPT_VERSION   = 1 ]; then $GOSH_CORE "version";
     elif [ $OPT_LIST      = 1 ]; then $GOSH_CORE "list"         $OPT_NO_COLORS;
     elif [ $OPT_LIST_LONG = 1 ]; then $GOSH_CORE "list-long"    $OPT_NO_COLORS;
     elif [ $OPT_REMOVE    = 1 ]; then $GOSH_CORE "remove" $1    $OPT_NO_COLORS;
     elif [ $OPT_ADD       = 1 ]; then $GOSH_CORE "add"    $1 $2 $OPT_NO_COLORS;
     elif [ $OPT_UPDATE    = 1 ]; then $GOSH_CORE "update" $1 $2 $OPT_NO_COLORS;
-        
-    #If we fall in this "else" clause means that we didn't passed any 
-    #command line options, but instead passed a bookmark name. 
+
+    #If we fall in this "else" clause means that we didn't passed any
+    #command line options, but instead passed a bookmark name.
     #This can result in two possible outcomes.
     #   1 - A bookmark was found with this name, so we must change the dir.
     #   2 - No bookmark was found, so we must present a error message.
-    #Since all the logic are in gosh-core, but we must change the directory 
+    #Since all the logic are in gosh-core, but we must change the directory
     #in this script, we must have a way to check if the Bookmark name was valid
     #or not. To do this we put the result of gosh-core in a string bundled with
     #a return value, a separator and a error message or valid path.
     #The return value is:
     #  0 - If path is valid.
-    #  1 - If a error message must be displayed. 
-    else 
+    #  1 - If a error message must be displayed.
+    else
         GOSH_CMD=$($GOSH_CORE $1 $OPT_NO_COLORS);
         RET_VAL=$(echo $GOSH_CMD | cut -d"#" -f1);
         RET_STR=$(echo $GOSH_CMD | cut -d"#" -f2);
@@ -120,20 +120,20 @@ function gosh
         #We have a valid path.
         if [[ $RET_VAL = 0 ]]; then
             cd $RET_STR;
-            
+
             #Print the path...
-            echo -n "Gosh: "; 
-            tput setaf 5; 
+            echo -n "Gosh: ";
+            tput setaf 5;
             echo $RET_STR;
             tput sgr0;
 
             return;
-        
+
         #We have a error message.
         else
             echo $RET_STR;
             return;
         fi;
-    
+
     fi; # From starting checking command line options...
 }
