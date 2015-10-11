@@ -47,8 +47,8 @@ install:
 	cp -f ./gosh-core.py  /usr/local/bin/gosh-core
 	cp -f ./gosh.sh       /usr/local/bin/gosh
 
-	chmod 744 /usr/local/bin/gosh-core
-	chmod 744 /usr/local/bin/gosh
+	chmod 747 /usr/local/bin/gosh-core
+	chmod 747 /usr/local/bin/gosh
 
 	@ echo "\n---> Make the backup of the original ($(BASH_PROFILE))."
 	cp $(BASH_PROFILE) ~/.bash_profile_gosh_backup
