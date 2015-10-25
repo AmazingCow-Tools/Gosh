@@ -429,4 +429,4 @@ if(__name__ == "__main__"):
     try:
         main();
     except Exception, e:
-        print_fatal("You should use gosh not gosh-core. {}".format(e));
+        print_fatal("You should use gosh not gosh-core. (Exception: ({}))".format(e));
