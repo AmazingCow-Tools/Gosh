@@ -131,7 +131,7 @@ def read_bookmarks():
 
             #Trim all white spaces.
             name = name.replace(" ", "");
-            path = path.replace(" ", "");
+            path = path.lstrip().rstrip();
 
             Globals.bookmarks[name] = path;
 
@@ -213,6 +213,16 @@ def ensure_bookmark_existance_or_die(name, bookmark_shall_exists):
 
     if(not bookmark_exists(name) and bookmark_shall_exists == True):
         print_fatal("Bookmark ({}) doesn't exists.".format(C.blue(name)));
+
+def canonize_path(path):
+    path = path.lstrip().rstrip();
+    path = os.path.abspath(os.path.expanduser(path));
+    
+    return path;
+
+def escape_path(path):
+    # path = "\"{}\"".format(path);
+    return path;
 
 ################################################################################
 ## Print Functions                                                            ##
@@ -298,9 +308,10 @@ def add_bookmark(name, path):
     ensure_bookmark_existance_or_die(name, bookmark_shall_exists=False);
 
     #Check if path is valid path.
-    abs_path = os.path.abspath(os.path.expanduser(path));
+    abs_path = canonize_path(path);
     ensure_valid_path_or_die(abs_path);
 
+    print abs_path;
     #Name and Path are valid... Add it and inform the user.
     Globals.bookmarks[name] = abs_path;
     msg = "Bookmark added:\n  ({}) - ({})".format(C.blue(name),
@@ -338,7 +349,7 @@ def update_bookmark(name, path):
     ensure_bookmark_existance_or_die(name, bookmark_shall_exists=True);
 
     #Check if path is valid path.
-    abs_path = os.path.abspath(os.path.expanduser(path));
+    abs_path = canonize_path(path);
     ensure_valid_path_or_die(abs_path);
 
     #Bookmark exists and path is valid... Update it and inform the user.
@@ -370,17 +381,17 @@ def main():
     #All the command line options are exclusive operations. i.e
     #they will run the requested command and exit after it.
     #Help / Version.
-    if(Constants.ACTION_HELP      == first_arg): print_help();
-    if(Constants.ACTION_VERSION   == first_arg): print_version();
+    if(Constants.ACTION_HELP    == first_arg): print_help();
+    if(Constants.ACTION_VERSION == first_arg): print_version();
 
     #List.
     if(Constants.ACTION_LIST      == first_arg): list_bookmarks();
     if(Constants.ACTION_LIST_LONG == first_arg): list_bookmarks(long=True);
 
     #Remove / Add / Update.
-    if(Constants.ACTION_REMOVE    == first_arg): remove_bookmark(second_arg);
-    if(Constants.ACTION_ADD       == first_arg): add_bookmark   (second_arg, third_arg);
-    if(Constants.ACTION_UPDATE    == first_arg): update_bookmark(second_arg, third_arg);
+    if(Constants.ACTION_REMOVE  == first_arg): remove_bookmark(second_arg);
+    if(Constants.ACTION_ADD     == first_arg): add_bookmark   (second_arg, third_arg);
+    if(Constants.ACTION_UPDATE  == first_arg): update_bookmark(second_arg, third_arg);
 
 
     #No command line options were found so it means that user is trying
@@ -410,7 +421,7 @@ def main():
         print_invalid_output(msg);
 
     #Bookmark exists, check if path is valid.
-    bookmark_path = path_for_bookmark(first_arg);
+    bookmark_path = path_for_bookmark(first_arg);    
     if(not os.path.isdir(bookmark_path)):
         msg = "Bookmark ({}) {} ({})".format(C.blue(first_arg),
                                              "exists but it's path is invalid.",
@@ -419,7 +430,7 @@ def main():
 
     #Bookmark and path are valid.
     #Print the path to gosh shell script change the directory.
-    print_valid_output(bookmark_path);
+    print_valid_output(escape_path(bookmark_path));
 
 
 if(__name__ == "__main__"):

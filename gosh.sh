@@ -96,9 +96,9 @@ function gosh
     elif [ $OPT_VERSION   = 1 ]; then $GOSH_CORE "version";
     elif [ $OPT_LIST      = 1 ]; then $GOSH_CORE "list"         $OPT_NO_COLORS;
     elif [ $OPT_LIST_LONG = 1 ]; then $GOSH_CORE "list-long"    $OPT_NO_COLORS;
-    elif [ $OPT_REMOVE    = 1 ]; then $GOSH_CORE "remove" $1    $OPT_NO_COLORS;
-    elif [ $OPT_ADD       = 1 ]; then $GOSH_CORE "add"    $1 $2 $OPT_NO_COLORS;
-    elif [ $OPT_UPDATE    = 1 ]; then $GOSH_CORE "update" $1 $2 $OPT_NO_COLORS;
+    elif [ $OPT_REMOVE    = 1 ]; then $GOSH_CORE "remove" "$1"    $OPT_NO_COLORS;
+    elif [ $OPT_ADD       = 1 ]; then $GOSH_CORE "add"    "$1" "$2" $OPT_NO_COLORS;
+    elif [ $OPT_UPDATE    = 1 ]; then $GOSH_CORE "update" "$1" "$2" $OPT_NO_COLORS;
 
     #If we fall in this "else" clause means that we didn't passed any
     #command line options, but instead passed a bookmark name.
@@ -119,7 +119,7 @@ function gosh
 
         #We have a valid path.
         if [[ $RET_VAL = 0 ]]; then
-            cd $RET_STR;
+            cd "$RET_STR";
 
             #Print the path...
             echo -n "Gosh: ";
