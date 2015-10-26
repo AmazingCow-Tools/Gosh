@@ -20,3 +20,8 @@ version 0.2.0
                 Now it will print the install/uninstall steps but not the commands.
 
 
+version 0.2.2
+[Oct 28 2015] - [BUG FIX] Correct the bug that didn't let the path with spaces 
+				to be used.				
+
+
