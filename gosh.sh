@@ -128,7 +128,7 @@ function gosh
     elif [ $OPT_PRINT = 1 ]; then
         # $1 -> The name of bookmark.
         # $OPT_NO_COLORS -> empty if not defined by user.
-        echo $($GOSH_CORE "gosh_opt_print" "$1" $OPT_NO_COLORS);
+        $GOSH_CORE "gosh_opt_print" "$1" $OPT_NO_COLORS
 
     else
         # $1 -> The name of bookmark.
@@ -150,5 +150,4 @@ function gosh
             echo $RET_VAL;
         fi;
     fi;
-
 }
