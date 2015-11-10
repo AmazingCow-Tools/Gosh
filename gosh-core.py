@@ -69,14 +69,14 @@ class Constants:
     BOOKMARK_SEPARATOR = ":";
 
     #Kind of getopt flags but fixed in positions.
-    ACTION_HELP      = "help";
-    ACTION_VERSION   = "version";
-    ACTION_LIST      = "list";
-    ACTION_LIST_LONG = "list-long";
-    ACTION_REMOVE    = "remove";
-    ACTION_ADD       = "add";
-    ACTION_UPDATE    = "update";
-
+    ACTION_HELP      = "gosh_opt_help";
+    ACTION_VERSION   = "gosh_opt_version";
+    ACTION_LIST      = "gosh_opt_list";
+    ACTION_LIST_LONG = "gosh_opt_list-long";
+    ACTION_REMOVE    = "gosh_opt_remove";
+    ACTION_ADD       = "gosh_opt_add";
+    ACTION_UPDATE    = "gosh_opt_update";
+    ACTION_PRINT     = "gosh_opt_print";
 
 class Globals:
     bookmarks     = {};    #Our bookmarks dictionary.
@@ -365,6 +365,9 @@ def update_bookmark(name, path):
 ## Script Initialization                                                      ##
 ################################################################################
 def main():
+    # import pdb;
+    # pdb.set_trace();
+
     #gosh will pass as last parameter with user want color or not.
     #So we grab this information and remove them from list because
     #The other options will use the length of the list as a way to check
@@ -392,45 +395,28 @@ def main():
     if(Constants.ACTION_REMOVE  == first_arg): remove_bookmark(second_arg);
     if(Constants.ACTION_ADD     == first_arg): add_bookmark   (second_arg, third_arg);
     if(Constants.ACTION_UPDATE  == first_arg): update_bookmark(second_arg, third_arg);
+    
+    
+    if(Constants.ACTION_PRINT == first_arg): 
+        if(not bookmark_exists(second_arg)):
+            msg = "Bookmark ({}) doesn't exists.".format(C.blue(second_arg));        
+            print msg;
+            exit(1);
 
+        #Bookmark exists, check if path is valid.
+        bookmark_path = path_for_bookmark(second_arg);    
+        if(not os.path.isdir(bookmark_path)):
+            msg = "Bookmark ({}) {} ({})".format(C.blue(second_arg),
+                                                 "exists but it's path is invalid.",
+                                                 C.magenta(bookmark_path));
+            print msg;
+            exit(1);
 
-    #No command line options were found so it means that user is trying
-    #to go to a bookmark location. But since this program is not a stand
-    #alone program, it actually don't go to the requested location, it
-    #will just 'print' the bookmark's path.
-    #By 'printing' the location we enable the gosh shell script to 'capture'
-    #the 'printed' location and actually change the directory.
-    #
-    #But we have caveat here, the gosh shell script must be able to recognize
-    #the valid output i.e. the bookmark's path from the error output i.e. the
-    #stuff that must be show to user but isn't a path.
-    #To do this we decide to set the '#' character as a meta character that
-    #has the meaning of be a separator. This way we pass a return value followed
-    #by the "#" and the message | path.
-    #
-    #So any valid path will be printed as:
-    #   0#/some/path/here - Where: 0 is the return value for gosh shell script.
-    #                              # is the separator (used in cut).
-    #                              /some/path/here is a valid path.
-    #And any invalid output will be printed as:
-    #  1#ERROR MESSAGE - Where: 1 is the return value for gosh shell script.
-    #                           # is the separator.
-    #                           ERROR MESSAGE is the error message. :O
-    if(not bookmark_exists(first_arg)):
-        msg = "Bookmark ({}) doesn't exists.".format(C.blue(first_arg));
-        print_invalid_output(msg);
+        #Bookmark and path are valid.
+        #Print the path to gosh shell script change the directory.
+        print escape_path(bookmark_path);
+        exit(0);
 
-    #Bookmark exists, check if path is valid.
-    bookmark_path = path_for_bookmark(first_arg);    
-    if(not os.path.isdir(bookmark_path)):
-        msg = "Bookmark ({}) {} ({})".format(C.blue(first_arg),
-                                             "exists but it's path is invalid.",
-                                             C.magenta(bookmark_path));
-        print_invalid_output(msg);
-
-    #Bookmark and path are valid.
-    #Print the path to gosh shell script change the directory.
-    print_valid_output(escape_path(bookmark_path));
 
 
 if(__name__ == "__main__"):
