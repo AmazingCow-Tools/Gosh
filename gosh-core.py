@@ -241,12 +241,14 @@ def print_valid_output(msg):
 
 def print_help():
     print """Usage:
+  gosh 
   gosh <Name>
-  gosh [-hv] [-n] [-lL] [-au <Name> <Path>] [-r <Name>]
+  gosh [-hv] [-n] [-lL] [-p <Name>] [-au <Name> <Path>] [-r <Name>]
 
 Options:
  *-h               : Show this screen.
  *-v               : Show app version and copyright.
+ *-p <Name>        : Print the path of Bookmark.
  *-a <Name> <Path> : Add a Bookmark with specified path.
  *-r <Name>        : Remove a Bookmark.
  *-u <Name> <Path> : Update a Bookmark to path.
@@ -264,7 +266,7 @@ Notes:
 
 def print_version():
     print "\n".join([
-        "gosh - 0.2.2 - N2OMatt <n2omatt@amazingcow.com>",
+        "gosh - 0.3.0 - N2OMatt <n2omatt@amazingcow.com>",
         "Copyright (c) 2015 - Amazing Cow",
         "This is a free software (GPLv3) - Share/Hack it",
         "Check opensource.amazingcow.com for more :)"]);
