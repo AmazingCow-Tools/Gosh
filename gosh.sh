@@ -62,6 +62,7 @@ function gosh
     local OPT_UPDATE=0;
     local OPT_LIST=0;
     local OPT_LIST_LONG=0;
+    local OPT_PRINT=0;
     local OPT_NO_COLORS="";
 
     #No args, just list the bookmarks.
@@ -71,7 +72,7 @@ function gosh
     fi;
 
     #Parse the command line options.
-    while getopts :hvarulLn FLAG; do
+    while getopts :hvarulLnp FLAG; do
         case $FLAG in
              h) OPT_HELP=1                ;;
              v) OPT_VERSION=1             ;;
@@ -80,6 +81,7 @@ function gosh
              r) OPT_REMOVE=1              ;;
              a) OPT_ADD=1                 ;;
              u) OPT_UPDATE=1              ;;
+             p) OPT_PRINT=1               ;;
              n) OPT_NO_COLORS="no-colors" ;;
             \?) OPT_HELP=1                ;;
         esac
@@ -92,48 +94,61 @@ function gosh
 
     #Start checking with command line options were give.
     #All options are exclusive, meaning that they'll run and exit after.
-    if   [ $OPT_HELP      = 1 ]; then $GOSH_CORE "help";
-    elif [ $OPT_VERSION   = 1 ]; then $GOSH_CORE "version";
-    elif [ $OPT_LIST      = 1 ]; then $GOSH_CORE "list"         $OPT_NO_COLORS;
-    elif [ $OPT_LIST_LONG = 1 ]; then $GOSH_CORE "list-long"    $OPT_NO_COLORS;
-    elif [ $OPT_REMOVE    = 1 ]; then $GOSH_CORE "remove" "$1"    $OPT_NO_COLORS;
-    elif [ $OPT_ADD       = 1 ]; then $GOSH_CORE "add"    "$1" "$2" $OPT_NO_COLORS;
-    elif [ $OPT_UPDATE    = 1 ]; then $GOSH_CORE "update" "$1" "$2" $OPT_NO_COLORS;
+    if [ $OPT_HELP = 1 ]; then
+        $GOSH_CORE "gosh_opt_help";
 
-    #If we fall in this "else" clause means that we didn't passed any
-    #command line options, but instead passed a bookmark name.
-    #This can result in two possible outcomes.
-    #   1 - A bookmark was found with this name, so we must change the dir.
-    #   2 - No bookmark was found, so we must present a error message.
-    #Since all the logic are in gosh-core, but we must change the directory
-    #in this script, we must have a way to check if the Bookmark name was valid
-    #or not. To do this we put the result of gosh-core in a string bundled with
-    #a return value, a separator and a error message or valid path.
-    #The return value is:
-    #  0 - If path is valid.
-    #  1 - If a error message must be displayed.
+    elif [ $OPT_VERSION = 1 ]; then
+        $GOSH_CORE "gosh_opt_version";
+
+    elif [ $OPT_LIST = 1 ]; then
+        # $OPT_NO_COLORS -> empty if not defined by user.
+        $GOSH_CORE "gosh_opt_list" $OPT_NO_COLORS;
+
+    elif [ $OPT_LIST_LONG = 1 ]; then
+        # $OPT_NO_COLORS -> empty if not defined by user.
+        $GOSH_CORE "gosh_opt_list-long" $OPT_NO_COLORS;
+
+    elif [ $OPT_REMOVE = 1 ];
+        # $1 -> The name of bookmark.
+        # $OPT_NO_COLORS -> empty if not defined by user.
+        then $GOSH_CORE "gosh_opt_remove" "$1" $OPT_NO_COLORS;
+
+    elif [ $OPT_ADD = 1 ];
+        # $1 -> The name of bookmark.
+        # $2 -> The path - This could be empty, gosh-core will handle this.
+        # $OPT_NO_COLORS -> empty if not defined by user.
+        then $GOSH_CORE "gosh_opt_add" "$1" "$2" $OPT_NO_COLORS;
+
+    elif [ $OPT_UPDATE = 1 ]; then
+        # $1 -> The name of bookmark.
+        # $2 -> The path - This could be empty, gosh-core will handle this.
+        # $OPT_NO_COLORS -> empty if not defined by user.
+        $GOSH_CORE "gosh_opt_update" "$1" "$2" $OPT_NO_COLORS;
+
+    elif [ $OPT_PRINT = 1 ]; then
+        # $1 -> The name of bookmark.
+        # $OPT_NO_COLORS -> empty if not defined by user.
+        echo $($GOSH_CORE "gosh_opt_print" "$1" $OPT_NO_COLORS);
+
     else
-        GOSH_CMD=$($GOSH_CORE $1 $OPT_NO_COLORS);
-        RET_VAL=$(echo $GOSH_CMD | cut -d"#" -f1);
-        RET_STR=$(echo $GOSH_CMD | cut -d"#" -f2);
+        # $1 -> The name of bookmark.
+        # ALWAYS NO COLORS since it will be passed to cd(1) and
+        # we don't want the escape chars on it.
+        local RET_VAL=$($GOSH_CORE "gosh_opt_print" "$1");
+        $GOSH_CORE "gosh_opt_print" "$1" > /dev/null;
 
-        #We have a valid path.
-        if [[ $RET_VAL = 0 ]]; then
-            cd "$RET_STR";
-
-            #Print the path...
-            echo -n "Gosh: ";
-            tput setaf 5;
-            echo $RET_STR;
-            tput sgr0;
-
-            return;
-
-        #We have a error message.
+        #The gosh-core call was successful?
+        if [ $? = 0 ]; then
+            #Change the directory.
+            cd $RET_VAL;
+            if [ -z "$OPT_NO_COLORS" ]; then
+                echo "Gosh:"; tput setaf 5; echo " $RET_VAL"; tput sgr0;
+            else
+                echo "$RET_VAL";
+            fi;
         else
-            echo $RET_STR;
-            return;
+            echo $RET_VAL;
         fi;
+    fi;
 
-    fi; # From starting checking command line options...
 }
