@@ -231,14 +231,6 @@ def print_fatal(msg):
     print "{} {}".format(C.red("[FATAL]"), msg);
     exit(1);
 
-def print_invalid_output(msg):
-    print "1#" + "{} {}".format(C.red("[ERROR]"), msg);
-    exit(1);
-
-def print_valid_output(msg):
-    print "0#" + msg;
-    exit(0);
-
 def print_help():
     print """Usage:
   gosh 
@@ -398,8 +390,11 @@ def main():
     if(Constants.ACTION_ADD     == first_arg): add_bookmark   (second_arg, third_arg);
     if(Constants.ACTION_UPDATE  == first_arg): update_bookmark(second_arg, third_arg);
     
-    
+    #Print.
     if(Constants.ACTION_PRINT == first_arg): 
+        if(len(second_arg) == 0):
+            print_fatal("Missing args - name.");
+
         if(not bookmark_exists(second_arg)):
             msg = "Bookmark ({}) doesn't exists.".format(C.blue(second_arg));        
             print msg;
