@@ -67,7 +67,7 @@ function gosh
 
     #No args, just list the bookmarks.
     if [ $# -eq 0 ]; then
-        $GOSH_CORE "list";
+        $GOSH_CORE "gosh_opt_list";
         return;
     fi;
 
