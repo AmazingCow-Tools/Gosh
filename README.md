@@ -11,7 +11,7 @@ It's not a way that we liked yet, but is good enough to be used.
 
 The main drawback that we've found is as we cannot change the current 
 working directory of parent process we must do some workaround stuff to get 
-the program to work. To the end user this is almost transparent but the 
+the program to work. To the end user this is __almost__ transparent but the 
 code solution isn't clean or elegant enough.   
 
 See the **Drawbacks** section to see what works and what not.
