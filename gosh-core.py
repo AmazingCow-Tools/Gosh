@@ -7,7 +7,7 @@
 ##            ███  █  █  ███                                                  ##
 ##            █ █        █ █        gosh-core.py                              ##
 ##             ████████████         Gosh                                      ##
-##           █              █       Copyright (c) 2015 AmazingCow             ##
+##           █              █       Copyright (c) 2015, 2016 - AmazingCow     ##
 ##          █     █    █     █      www.AmazingCow.com                        ##
 ##          █     █    █     █                                                ##
 ##           █              █       N2OMatt - n2omatt@amazingcow.com          ##
