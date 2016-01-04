@@ -255,7 +255,7 @@ Notes:
 
 def print_version():
     print "\n".join([
-        "gosh - 0.3.2 - N2OMatt <n2omatt@amazingcow.com>",
+        "gosh - 0.4.0 - N2OMatt <n2omatt@amazingcow.com>",
         "Copyright (c) 2015, 2016 - Amazing Cow",
         "This is a free software (GPLv3) - Share/Hack it",
         "Check opensource.amazingcow.com for more :)"]);
