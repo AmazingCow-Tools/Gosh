@@ -89,18 +89,18 @@ class Globals:
 class C:
     @staticmethod
     def red(msg):
-        return C.__colored(msg, "red");
+        return C._colored(msg, "red");
 
     @staticmethod
     def blue(msg):
-        return C.__colored(msg, "blue");
+        return C._colored(msg, "blue");
 
     @staticmethod
     def magenta(msg):
-        return C.__colored(msg, "magenta");
+        return C._colored(msg, "magenta");
 
     @staticmethod
-    def __colored(msg, color):
+    def _colored(msg, color):
         if(not Globals.opt_no_colors):
             return colored(msg, color);
         return msg;
