@@ -359,9 +359,6 @@ def update_bookmark(name, path):
 ## Script Initialization                                                      ##
 ################################################################################
 def main():
-    # import pdb;
-    # pdb.set_trace();
-
     #gosh will pass as last parameter with user want color or not.
     #So we grab this information and remove them from list because
     #The other options will use the length of the list as a way to check
