@@ -220,9 +220,6 @@ def canonize_path(path):
     
     return path;
 
-def escape_path(path):
-    # path = "\"{}\"".format(path);
-    return path;
 
 ################################################################################
 ## Print Functions                                                            ##
@@ -408,7 +405,7 @@ def main():
 
         #Bookmark and path are valid.
         #Print the path to gosh shell script change the directory.
-        print escape_path(bookmark_path);
+        print bookmark_path;
         exit(0);
 
 
