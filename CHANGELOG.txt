@@ -12,17 +12,17 @@ version 0.1.2
 == Start v0.2.x                                                               ==
 ================================================================================
 version 0.2.0
-[Sep 28 2015] - Rewritten gosh. 
-                Now it is a two part program - gosh and gosh-core. 
+[Sep 28 2015] - Rewritten gosh.
+                Now it is a two part program - gosh and gosh-core.
                 As a good consequence we complete the TODO #3,4 and 5.
-                
+
                 Update the Makefile.
                 Now it will print the install/uninstall steps but not the commands.
 
 
 version 0.2.2
-[Oct 28 2015] - [BUG FIX] Correct the bug that didn't let the path with spaces 
-				to be used.				
+[Oct 28 2015] - [BUG FIX] Correct the bug that didn't let the path with spaces
+				to be used.
 
 
 
@@ -31,3 +31,7 @@ version 0.2.2
 ================================================================================
 version 0.4.0
 [Jan 04 2016] - A lot of minor changes.
+
+version 0.4.1
+[Jan 05 2016] - Correct the install target of makefile.
+                Now the ownership of the BASH_PROFILE is preserved.

@@ -42,6 +42,7 @@
 BASH_PROFILE=~/.bash_profile
 BASH_COMPLETION_DIR=`pkg-config --variable=completionsdir bash-completion`
 
+install: ORIGINAL_OWNER:=$(shell stat -c "%U.%G" $(BASH_PROFILE))
 install:
 	@ echo "---> Install gosh."
 	cp -f ./gosh-core.py  /usr/local/bin/gosh-core
@@ -61,15 +62,18 @@ install:
 	echo "## AmazingCow - Gosh ##"    >> $(BASH_PROFILE)
 	echo "source /usr/local/bin/gosh" >> $(BASH_PROFILE)
 
-	@echo "\n---> Install the bash completion script at ($(BASH_COMPLETION_DIR))."
-	@if [ -d $(BASH_COMPLETION_DIR) ]; then \
+	@ echo "\n---> Install the bash completion script at ($(BASH_COMPLETION_DIR))."
+	@ if [ -d $(BASH_COMPLETION_DIR) ]; then \
 	   cp -f ././gosh_bash-completion.sh $(BASH_COMPLETION_DIR)/gosh; \
 	else \
 	   echo "[SKIPPING] $(BASH_COMPLETION_DIR) does not exists..."; \
 	   echo "You may want set BASH_COMPLETION_DIR to the actual dir."; \
 	fi
 
-	@echo "\n---> done..."
+	@ echo "\n---> Restoring the ownership of ($(BASH_PROFILE))."
+	sudo chown $(ORIGINAL_OWNER) $(BASH_PROFILE);
+
+	@ echo "\n---> done..."
 
 
 uninstall:

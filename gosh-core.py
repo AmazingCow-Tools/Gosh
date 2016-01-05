@@ -217,7 +217,7 @@ def ensure_bookmark_existance_or_die(name, bookmark_shall_exists):
 def canonize_path(path):
     path = path.lstrip().rstrip();
     path = os.path.abspath(os.path.expanduser(path));
-    
+
     return path;
 
 
@@ -230,7 +230,7 @@ def print_fatal(msg):
 
 def print_help():
     print """Usage:
-  gosh 
+  gosh
   gosh <Name>
   gosh [-hv] [-n] [-lL] [-p <Name>] [-au <Name> <Path>] [-r <Name>]
 
@@ -255,7 +255,7 @@ Notes:
 
 def print_version():
     print "\n".join([
-        "gosh - 0.4.0 - N2OMatt <n2omatt@amazingcow.com>",
+        "gosh - 0.4.1 - N2OMatt <n2omatt@amazingcow.com>",
         "Copyright (c) 2015, 2016 - Amazing Cow",
         "This is a free software (GPLv3) - Share/Hack it",
         "Check opensource.amazingcow.com for more :)"]);
@@ -383,19 +383,19 @@ def main():
     if(Constants.ACTION_REMOVE  == first_arg): remove_bookmark(second_arg);
     if(Constants.ACTION_ADD     == first_arg): add_bookmark   (second_arg, third_arg);
     if(Constants.ACTION_UPDATE  == first_arg): update_bookmark(second_arg, third_arg);
-    
+
     #Print.
-    if(Constants.ACTION_PRINT == first_arg): 
+    if(Constants.ACTION_PRINT == first_arg):
         if(len(second_arg) == 0):
             print_fatal("Missing args - name.");
 
         if(not bookmark_exists(second_arg)):
-            msg = "Bookmark ({}) doesn't exists.".format(C.blue(second_arg));        
+            msg = "Bookmark ({}) doesn't exists.".format(C.blue(second_arg));
             print msg;
             exit(1);
 
         #Bookmark exists, check if path is valid.
-        bookmark_path = path_for_bookmark(second_arg);    
+        bookmark_path = path_for_bookmark(second_arg);
         if(not os.path.isdir(bookmark_path)):
             msg = "Bookmark ({}) {} ({})".format(C.blue(second_arg),
                                                  "exists but it's path is invalid.",
