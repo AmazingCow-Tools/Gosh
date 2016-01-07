@@ -154,18 +154,20 @@ To uninstall ```gosh``` using the makefile you can use:
     make uninstall
 ```
 
-The install/uninstall targets accepts the file that gosh will be sourced, the default is```~/.bash_profile```.   
+The install/uninstall targets accepts the file that gosh will be sourced, the default is ```~/.bash_profile```.   
 To specify other file use ```BASH_PROFILE=your_bash_profile_here```
 
 A bash-completion script is also provided if your system supports.  
 
 By default it will get the installation running the command:   
+
 ```pkg-config --variable=completionsdir bash-completion```   
 
 You can change the installation location passing another path as:   
+
 ```BASH_COMPLETION_DIR=your_location_here```
 
-#####Note 
+##### Note 
 The makefile will create backups before doing the operations.
 
 ## License:
