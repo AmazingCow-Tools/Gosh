@@ -1,7 +1,7 @@
 version 0.1.1
 [Sep 12 2015] - Gosh now prints the bookmarks and the paths in a more formatted way.
-        		A option to disable the colored output is added, since now colored
-		        output is the default.
+                A option to disable the colored output is added, since now colored
+                output is the default.
 
 version 0.1.2
 [Sep 24 2015] - Change the makefile to perform a copy (cp) instead of link (ln).
@@ -22,7 +22,7 @@ version 0.2.0
 
 version 0.2.2
 [Oct 28 2015] - [BUG FIX] Correct the bug that didn't let the path with spaces
-				to be used.
+                to be used.
 
 
 
@@ -35,3 +35,9 @@ version 0.4.0
 version 0.4.1
 [Jan 05 2016] - Correct the install target of makefile.
                 Now the ownership of the BASH_PROFILE is preserved.
+
+version 0.4.2 
+[Jam 26 2016] - Update the license headers.
+                Correct the markdown in README.
+                Add the "comments separtors" on README.
+                Fix some spacement issues on gosh-core.py

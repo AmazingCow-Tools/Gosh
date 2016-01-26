@@ -3,6 +3,8 @@ Gosh
 
 Made with <3 by [Amazing Cow](http://www.amazingcow.com).
 
+<!-- ####################################################################### -->
+
 ## Intro:
 
 A very basic shell book marker util.  
@@ -21,6 +23,8 @@ Gosh was rewritten in the version 0.1x -> 0.2.x and now, we think, that the
 way that stuff is organized is much better.
 
 
+<!-- ####################################################################### -->
+
 ## How it works:
 
 The program has two "parts", the ```gosh-core``` and the ```gosh``` function. 
@@ -29,10 +33,10 @@ The ```gosh-core``` is a python script located in ```/usr/local/bin``` that
 handles everything about the application, except changing directory.   
 
 In Unix (and Linux and OSX and all :O) we cannot change the properties of the 
-parent process and since when we start a program a fork of current shell is created
-we're unable to change the current directory of the parent shell.   
-This is not a problem to all operations of ```gosh``` like **add**, **remove**, **update** 
-and **list** the bookmarks.   
+parent process and since when we start a program a fork of current shell is 
+created we're unable to change the current directory of the parent shell.   
+This is not a problem to all operations of ```gosh``` like **add**, **remove**, 
+**update** and **list** the bookmarks.   
 But is a **BIG** problem in the main feature of ```gosh``` that is change the
 current directory.  
 
@@ -48,21 +52,22 @@ be executed not the file located at ```/usr/local/bin```.
 The ```gosh``` file and by extension the ```gosh``` function inside this file 
 has only one job - Parse the command line options and forward them to ```gosh-core```.   
 The ```gosh-core``` expects the options in a very strict way, so even is possible 
-to use ```gosh-core``` directly (but not for changing the directory) is very unpleasant 
-thing to do.
+to use ```gosh-core``` directly (but not for changing the directory) is 
+very unpleasant thing to do.
 
 All operations (**add**, **remove**, **update**, **list**) are handled only by 
 ```gosh-core```, i.e. after finish the operation it'll will quit and ```gosh```
 will do nothing more.  
-But when user wants to change the directory the flow is a bit different. First ```gosh```
-parse the command line parameters and forward to ```gosh-core``` the by it's time check 
-if a bookmark exists and if the path is valid. After ```gosh-core``` complete its job
-it must "pass back" the information to ```gosh```. 
-This is done by printing the info, but since we're in sub shell the user don't get this 
-output.   
-So after ```gosh-core``` print the information, ```gosh``` parse it and check if the info
-is a valid path or a error message and print it again (But now we're in the shell that
-originated the flow, so all output is visible to user). 
+But when user wants to change the directory the flow is a bit different. 
+First ```gosh``` parse the command line parameters and forward to ```gosh-core``` 
+the by it's  time check if a bookmark exists and if the path is valid. 
+After ```gosh-core``` complete its job it must "pass back" the information 
+to ```gosh```. 
+This is done by printing the info, but since we're in sub shell the user don't 
+get this output.   
+So after ```gosh-core``` print the information, ```gosh``` parse it and check 
+if the info is a valid path or a error message and print it again (But now 
+we're in the shell that originated the flow, so all output is visible to user). 
 
 
 Drawbacks:
@@ -109,6 +114,8 @@ or
 This is the main motivation for create this stuff.
 
 
+<!-- ####################################################################### -->
+
 ## Examples:
 * Add a bookmark.
         
@@ -140,14 +147,18 @@ gosh -l
 ```
 gosh AValidBookmark
 ```
-    
+
+<!-- ####################################################################### -->    
     
 ## Status:
 We're happy using gosh in a OSX 10.10, UbuntuMate 15.04, Ubuntu 14.04, Xubuntu
 Linux 14.10 and CentOS (our web hosting).      
-Up to date we don't have found any "bug" (but I'm sure that they are there, hidden, waiting
-for just one more user install this to goes out and mess everything :D ).
+Up to date we don't have found any "bug" (but I'm sure that they are there, 
+hidden, waiting for just one more user install this to goes out and 
+mess everything :D ).
 
+
+<!-- ####################################################################### -->
 
 ## Installation:
 Use the Makefile:
@@ -162,7 +173,8 @@ To uninstall ```gosh``` using the makefile you can use:
     make uninstall
 ```
 
-The install/uninstall targets accepts the file that gosh will be sourced, the default is ```~/.bash_profile```.   
+The install/uninstall targets accepts the file that gosh will be sourced, the 
+default is ```~/.bash_profile```.   
 To specify other file use ```BASH_PROFILE=your_bash_profile_here```
 
 A bash-completion script is also provided if your system supports.  
@@ -179,13 +191,19 @@ You can change the installation location passing another path as:
 The makefile will create backups before doing the operations.
 
 
+<!-- ####################################################################### -->
+
 ## License:
 This software is released under GPLv3.
 
 
+<!-- ####################################################################### -->
+
 ## TODO:
 Check the TODO file.
 
+
+<!-- ####################################################################### -->
 
 ## Others:
 Check our repos and take a look at our [open source site](http://opensource.amazingcow.com).
