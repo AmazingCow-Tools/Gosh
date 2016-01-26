@@ -1,5 +1,6 @@
 Gosh
 ====
+
 Made with <3 by [Amazing Cow](http://www.amazingcow.com).
 
 ## Intro:
@@ -18,6 +19,7 @@ See the **Drawbacks** section to see what works and what not.
 
 Gosh was rewritten in the version 0.1x -> 0.2.x and now, we think, that the
 way that stuff is organized is much better.
+
 
 ## How it works:
 
@@ -62,8 +64,10 @@ So after ```gosh-core``` print the information, ```gosh``` parse it and check if
 is a valid path or a error message and print it again (But now we're in the shell that
 originated the flow, so all output is visible to user). 
 
+
 Drawbacks:
 -----
+
 1. We must have too separated files. ```gosh-core``` and the ```gosh```.
 2. We must source the ```gosh``` file to make it "part" of the current shell. 
 Without this the changing directory stuff won't work.
@@ -75,12 +79,13 @@ came with those systems, but we're not 100% sure that is correct or will work at
 5. **GOSH WON'T WORK INSIDE SHELL SCRIPTS.**
 6. **The user must have** ```/usr/local/bin/gosh``` **sourced.**
 
+
 Motivation:
 -----
+
 We work in several small projects along of the day and usually one big project. 
 Furthermore our directory tree is very deep.   
 An example: 
-
 
 ```
 ~/Documents/Projects/AmazingCow/OpenSource/MonsterFramework
@@ -95,13 +100,14 @@ And is pain in butt to ```cd ..``` or ```cd ~/Documents/Projects/AmazingCow/...`
 just to change the working project.  
 I'd like to bookmark the directories and just type: 
 
-```gosh MonsterFramework```
+``` gosh MonsterFramework ```
 
 or 
 
-```gosh Client_Project1```
+``` gosh Client_Project1 ```
 
 This is the main motivation for create this stuff.
+
 
 ## Examples:
 * Add a bookmark.
@@ -135,11 +141,13 @@ gosh -l
 gosh AValidBookmark
 ```
     
+    
 ## Status:
 We're happy using gosh in a OSX 10.10, UbuntuMate 15.04, Ubuntu 14.04, Xubuntu
 Linux 14.10 and CentOS (our web hosting).      
 Up to date we don't have found any "bug" (but I'm sure that they are there, hidden, waiting
 for just one more user install this to goes out and mess everything :D ).
+
 
 ## Installation:
 Use the Makefile:
@@ -161,20 +169,23 @@ A bash-completion script is also provided if your system supports.
 
 By default it will get the installation running the command:   
 
-```pkg-config --variable=completionsdir bash-completion```   
+``` pkg-config --variable=completionsdir bash-completion ```   
 
 You can change the installation location passing another path as:   
 
-```BASH_COMPLETION_DIR=your_location_here```
+``` BASH_COMPLETION_DIR=your_location_here ```
 
 ##### Note 
 The makefile will create backups before doing the operations.
 
+
 ## License:
 This software is released under GPLv3.
 
+
 ## TODO:
 Check the TODO file.
+
 
 ## Others:
 Check our repos and take a look at our [open source site](http://opensource.amazingcow.com).
