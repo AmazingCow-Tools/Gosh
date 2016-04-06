@@ -45,6 +45,7 @@ import os;
 import os.path;
 import sys;
 import getopt;
+import pdb;
 
 #Termcolor isn't a standard module (but is really nice), so we must
 #support system that doens't has it. On those systems the colored,
@@ -69,14 +70,15 @@ class Constants:
     BOOKMARK_SEPARATOR = ":";
 
     #Kind of getopt flags but fixed in positions.
-    ACTION_HELP      = "gosh_opt_help";
-    ACTION_VERSION   = "gosh_opt_version";
-    ACTION_LIST      = "gosh_opt_list";
-    ACTION_LIST_LONG = "gosh_opt_list-long";
-    ACTION_REMOVE    = "gosh_opt_remove";
-    ACTION_ADD       = "gosh_opt_add";
-    ACTION_UPDATE    = "gosh_opt_update";
-    ACTION_PRINT     = "gosh_opt_print";
+    ACTION_HELP            = "gosh_opt_help";
+    ACTION_VERSION         = "gosh_opt_version";
+    ACTION_LIST            = "gosh_opt_list";
+    ACTION_LIST_LONG       = "gosh_opt_list-long";
+    ACTION_REMOVE          = "gosh_opt_remove";
+    ACTION_ADD             = "gosh_opt_add";
+    ACTION_UPDATE          = "gosh_opt_update";
+    ACTION_PRINT           = "gosh_opt_print";
+    ACTION_EXISTS_BOOKMARK = "gosh_opt_exists_bookmark";
 
 class Globals:
     bookmarks     = {};    #Our bookmarks dictionary.
@@ -189,6 +191,20 @@ def bookmark_exists(name):
 def path_for_bookmark(name):
     read_bookmarks();
     return Globals.bookmarks[name];
+
+def bookmark_for_path(path):
+    if(path is None):
+        return None;
+
+    read_bookmarks();
+    full_path = canonize_path(path);
+
+    for bookmark_name in Globals.bookmarks.keys():
+        bookmark_path = canonize_path(Globals.bookmarks[bookmark_name]);
+        if(bookmark_path == full_path):
+            return bookmark_name;
+
+    return None;
 
 def ensure_valid_bookmark_name_or_die(name):
     #Check if name isn't empty...
@@ -384,6 +400,16 @@ def main():
     if(Constants.ACTION_REMOVE  == first_arg): remove_bookmark(second_arg);
     if(Constants.ACTION_ADD     == first_arg): add_bookmark   (second_arg, third_arg);
     if(Constants.ACTION_UPDATE  == first_arg): update_bookmark(second_arg, third_arg);
+
+    #Exists Bookmark
+    if(Constants.ACTION_EXISTS_BOOKMARK == first_arg):
+        bookmark_name = bookmark_for_path(second_arg);
+        if(bookmark_name is None):
+            print "No bookmark";
+            exit(1);
+        else:
+            print "Bookmark: ({})".format(C.blue(bookmark_name));
+            exit(0);
 
     #Print.
     if(Constants.ACTION_PRINT == first_arg):

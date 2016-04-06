@@ -39,9 +39,6 @@
 ##                                  Enjoy :)                                  ##
 ##----------------------------------------------------------------------------##
 
-#COWTODO: Add a flag (-e ?) to check if a directory exists on gosh database \
-#         and print the bookmark name if exists...
-
 #Define some alias to ease the operations.
 alias gosh-list="gosh -l";
 alias gosh-add="gosh -a";
@@ -66,6 +63,7 @@ function gosh
     local OPT_LIST_LONG=0;
     local OPT_PRINT=0;
     local OPT_NO_COLORS="";
+    local OPT_EXISTS_BOOKMARK=0;
 
     #No args, just list the bookmarks.
     if [ $# -eq 0 ]; then
@@ -74,7 +72,7 @@ function gosh
     fi;
 
     #Parse the command line options.
-    while getopts :hvarulLnp FLAG; do
+    while getopts :hvarulLnpe FLAG; do
         case $FLAG in
              h) OPT_HELP=1                ;;
              v) OPT_VERSION=1             ;;
@@ -85,6 +83,7 @@ function gosh
              u) OPT_UPDATE=1              ;;
              p) OPT_PRINT=1               ;;
              n) OPT_NO_COLORS="no-colors" ;;
+             e) OPT_EXISTS_BOOKMARK=1     ;;
             \?) OPT_HELP=1                ;;
         esac
     done
@@ -131,6 +130,10 @@ function gosh
         # $1 -> The name of bookmark.
         # $OPT_NO_COLORS -> empty if not defined by user.
         $GOSH_CORE "gosh_opt_print" "$1" $OPT_NO_COLORS
+
+    elif [ $OPT_EXISTS_BOOKMARK = 1 ]; then
+        # $OPT_NO_COLORS -> empty if not defined by user.
+        $GOSH_CORE "gosh_opt_exists_bookmark" "$1" $OPT_NO_COLORS;
 
     else
         # $1 -> The name of bookmark.
