@@ -39,6 +39,9 @@
 ##                                  Enjoy :)                                  ##
 ##----------------------------------------------------------------------------##
 
+#COWTODO: Add a flag (-e ?) to check if a directory exists on gosh database \
+#         and print the bookmark name if exists...
+
 #Define some alias to ease the operations.
 alias gosh-list="gosh -l";
 alias gosh-add="gosh -a";
