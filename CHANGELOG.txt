@@ -24,8 +24,6 @@ version 0.2.2
 [Oct 28 2015] - [BUG FIX] Correct the bug that didn't let the path with spaces
                 to be used.
 
-
-
 ================================================================================
 == Start v0.4.x                                                               ==
 ================================================================================
@@ -36,8 +34,16 @@ version 0.4.1
 [Jan 05 2016] - Correct the install target of makefile.
                 Now the ownership of the BASH_PROFILE is preserved.
 
-version 0.4.2 
+version 0.4.2
 [Jam 26 2016] - Update the license headers.
                 Correct the markdown in README.
                 Add the "comments separtors" on README.
                 Fix some spacement issues on gosh-core.py
+
+================================================================================
+== Start v0.5.x                                                               ==
+================================================================================
+version 0.5.0
+[Apr 06 2016] - Make gosh understand the -e flag to check if a given
+                path is bookmarked or not.
+                Update the help screen.
