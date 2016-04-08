@@ -40,6 +40,10 @@
 ##                                  Enjoy :)                                  ##
 ##----------------------------------------------------------------------------##
 
+#COWTODO: Check if we can remove the absolute paths and instead use the ~ \
+#         This will enable us to use the "same" paths on OSX and Linux.
+#COWTODO: Change the termcolor to cowtermcolor.
+
 ## Imports ##
 import os;
 import os.path;
