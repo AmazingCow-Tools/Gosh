@@ -1,16 +1,75 @@
-version 0.1.1
-[Sep 12 2015] - Gosh now prints the bookmarks and the paths in a more formatted way.
-                A option to disable the colored output is added, since now colored
-                output is the default.
+================================================================================
+== Start v0.6.x                                                               ==
+================================================================================
+version 0.6.0 - Apr 14, 2016
+-- General --
+   - Gosh now accepts the long options.
 
-version 0.1.2
-[Sep 24 2015] - Change the makefile to perform a copy (cp) instead of link (ln).
-                Fix the colored output to work in all platforms.
+-- Source --
+   gosh.sh:
+     - Change from bash bultin getopts to the getopt(1)
+
+   gosh-core.py:
+      - Add code to remove the quotation since the getopt(1)
+        used by gosh.sh give its args to gosh-core
+        inside a pair of single quotes
+      - Update the help screen for long options.
+      - Make the Path and Name in help screen lowercase.
+      - Update the version number
+
+   gosh_bash-completion.sh
+     - Add the completion for short (one dash) and long (two dashes) options
+       as well for the bokamarks.
+
+-- Info Files --
+   README.md
+     - Update the README section to be consistent with
+       other Amazing Cow programs
+     - Add the OLDREADME.md to history sake.
+
+   CHANGELOG.txt
+     - Update the version | date format.
+     - Update the sort order - New entries are on top now.
+     - Split the CHANGELOG entry in sections.
+
+   TODO.txt
+     - Clean up the TODO file.
+
+
+================================================================================
+== Start v0.5.x                                                               ==
+================================================================================
+version 0.5.0
+[Apr 06 2016] - Make gosh understand the -e flag to check if a given
+                path is bookmarked or not.
+                Update the help screen.
+
+
+
+================================================================================
+== Start v0.4.x                                                               ==
+================================================================================
+version 0.4.2
+[Jam 26 2016] - Update the license headers.
+                Correct the markdown in README.
+                Add the "comments separtors" on README.
+                Fix some spacement issues on gosh-core.py
+
+version 0.4.1
+[Jan 05 2016] - Correct the install target of makefile.
+                Now the ownership of the BASH_PROFILE is preserved.
+
+version 0.4.0
+[Jan 04 2016] - A lot of minor changes.
 
 
 ================================================================================
 == Start v0.2.x                                                               ==
 ================================================================================
+version 0.2.2
+[Oct 28 2015] - [BUG FIX] Correct the bug that didn't let the path with spaces
+                to be used.
+
 version 0.2.0
 [Sep 28 2015] - Rewritten gosh.
                 Now it is a two part program - gosh and gosh-core.
@@ -20,30 +79,15 @@ version 0.2.0
                 Now it will print the install/uninstall steps but not the commands.
 
 
-version 0.2.2
-[Oct 28 2015] - [BUG FIX] Correct the bug that didn't let the path with spaces
-                to be used.
-
 ================================================================================
-== Start v0.4.x                                                               ==
+== Start v0.1.x                                                               ==
 ================================================================================
-version 0.4.0
-[Jan 04 2016] - A lot of minor changes.
+version 0.1.2
+[Sep 24 2015] - Change the makefile to perform a copy (cp) instead of link (ln).
+                Fix the colored output to work in all platforms.
 
-version 0.4.1
-[Jan 05 2016] - Correct the install target of makefile.
-                Now the ownership of the BASH_PROFILE is preserved.
 
-version 0.4.2
-[Jam 26 2016] - Update the license headers.
-                Correct the markdown in README.
-                Add the "comments separtors" on README.
-                Fix some spacement issues on gosh-core.py
-
-================================================================================
-== Start v0.5.x                                                               ==
-================================================================================
-version 0.5.0
-[Apr 06 2016] - Make gosh understand the -e flag to check if a given
-                path is bookmarked or not.
-                Update the help screen.
+version 0.1.1
+[Sep 12 2015] - Gosh now prints the bookmarks and the paths in a more formatted way.
+                A option to disable the colored output is added, since now colored
+                output is the default.
