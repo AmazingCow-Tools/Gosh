@@ -37,63 +37,87 @@
 ##                                                                            ##
 ##                                  Enjoy :)                                  ##
 ##----------------------------------------------------------------------------##
-##----------------------------------------------------------------------------##
 
+## Vars ##
 BASH_PROFILE=~/.bash_profile
 BASH_COMPLETION_DIR=`pkg-config --variable=completionsdir bash-completion`
 
-install: ORIGINAL_OWNER:=$(shell stat -c "%U.%G" $(BASH_PROFILE))
-install:
+
+################################################################################
+## Default Targets                                                            ##
+################################################################################
+all: install
+
+
+################################################################################
+## Install Targets                                                            ##
+################################################################################
+install: install-gosh install-completion install-make-backup
+	@ echo "\nEverything done - Enjoy gosh :)"
+
+install-gosh:
 	@ echo "---> Install gosh."
-	cp -f ./gosh-core.py  /usr/local/bin/gosh-core
-	cp -f ./gosh.sh       /usr/local/bin/gosh
+	sudo cp -f ./gosh-core.py  /usr/local/bin/gosh-core
+	sudo cp -f ./gosh.sh       /usr/local/bin/gosh
 
-	chmod 747 /usr/local/bin/gosh-core
-	chmod 747 /usr/local/bin/gosh
+	sudo chmod 747 /usr/local/bin/gosh-core
+	sudo chmod 747 /usr/local/bin/gosh
 
-	@ echo "\n---> Make the backup of the original ($(BASH_PROFILE))."
-	cp $(BASH_PROFILE) ~/.bash_profile_gosh_backup
+	@ echo "---> [Done]"
 
-	@ echo "\n---> Clean up everything about the gosh from file."
-	grep -vi gosh $(BASH_PROFILE) > ~/.gosh_temp
-	mv ~/.gosh_temp $(BASH_PROFILE)
-
-	@ echo "\n---> Add the lines to source the gosh program."
-	echo "## AmazingCow - Gosh ##"    >> $(BASH_PROFILE)
-	echo "source /usr/local/bin/gosh" >> $(BASH_PROFILE)
-
+install-completion:
 	@ echo "\n---> Install the bash completion script at ($(BASH_COMPLETION_DIR))."
 	@ if [ -d $(BASH_COMPLETION_DIR) ]; then \
-	   cp -f ././gosh_bash-completion.sh $(BASH_COMPLETION_DIR)/gosh; \
+	   sudo cp -f ./gosh_bash-completion.sh $(BASH_COMPLETION_DIR)/gosh; \
 	else \
 	   echo "[SKIPPING] $(BASH_COMPLETION_DIR) does not exists..."; \
 	   echo "You may want set BASH_COMPLETION_DIR to the actual dir."; \
 	fi
+	@ echo "---> [Done]"
 
-	@ echo "\n---> Restoring the ownership of ($(BASH_PROFILE))."
-	sudo chown $(ORIGINAL_OWNER) $(BASH_PROFILE);
+install-make-backup:
+	@ echo "\n---> Make the backup of the original ($(BASH_PROFILE))."
 
-	@ echo "\n---> done..."
+	cp $(BASH_PROFILE) ~/.bash_profile_gosh_backup
+
+	grep -vi gosh $(BASH_PROFILE) > ~/.gosh_temp
+	cat ~/.gosh_temp > $(BASH_PROFILE)
+	rm ~/.gosh_temp
+
+	echo "## AmazingCow - Gosh ##"    >> $(BASH_PROFILE)
+	echo "source /usr/local/bin/gosh" >> $(BASH_PROFILE)
+
+	@ echo "---> [Done]"
 
 
-uninstall:
-	@ echo "---> Remove gosh."
-	rm -f /usr/local/bin/gosh
-	rm -f /usr/local/bin/gosh-core
+################################################################################
+## Uninstall Targets                                                          ##
+################################################################################
+uninstall: uninstall-gosh uninstall-completion uninstall-make-backup
+	@ echo "\nEverything done - I hope see you again :\`("
 
+uninstall-gosh:
+	@ echo "---> Uninstall gosh."
+	sudo rm -f  /usr/local/bin/gosh-core
+	sudo rm -f  /usr/local/bin/gosh
+	@ echo "---> [Done]"
+
+uninstall-completion:
+	@echo "\n---> Remove the bash completion script at ($(BASH_COMPLETION_DIR))."
+	@if [ -f $(BASH_COMPLETION_DIR)/gosh ]; then \
+	   sudo rm -f $(BASH_COMPLETION_DIR)/gosh; \
+	else \
+	   echo "[SKIPPING] $(BASH_COMPLETION_DIR)/gosh does not exists..."; \
+	   echo "You may want set BASH_COMPLETION_DIR to the actual dir."; \
+	fi
+	@ echo "---> [Done]"
+
+uninstall-make-backup:
 	@ echo "\n---> Make the backup of the original $(BASH_PROFILE)."
 	cp $(BASH_PROFILE) ~/.bash_profile_gosh_backup
 
-	@echo "\n---> Clean up everything about the gosh from $(BASH_PROFILE)."
 	grep -vi gosh $(BASH_PROFILE) > ~/.gosh_temp
-	mv ~/.gosh_temp $(BASH_PROFILE)
+	cat ~/.gosh_temp > $(BASH_PROFILE)
+	rm ~/.gosh_temp
 
-	@echo "\n---> Remove the bash completion script at ($(BASH_COMPLETION_DIR))."
-	@if [ -f $(BASH_COMPLETION_DIR)/gosh ]; then \
-	   rm -f $(BASH_COMPLETION_DIR)/gosh; \
-	else \
-	   echo "[SKIPPING] $(BASH_COMPLETION_DIR)/_gosh does not exists..."; \
-	   echo "You may want set BASH_COMPLETION_DIR to the actual dir."; \
-	fi
-
-	@echo "\n---> done..."
+	@ echo "---> [Done]"
