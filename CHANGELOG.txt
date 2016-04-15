@@ -1,6 +1,24 @@
 ================================================================================
 == Start v0.6.x                                                               ==
 ================================================================================
+version 0.6.1 - Apr 14, 2016
+-- General --
+   Fix the Makefile.
+
+-- Source --
+   gosh-core.py
+     - Update the version numbers.
+
+   Makefile
+     - Split up the install and uninstall targets into several sub targets.
+       This makes the makefile more manageable and easy to modify.
+
+     - Fix the logic of update the BASH_PROFILE contents.
+       Now it respects if BASH_PROFILE is a link or a regular file
+       since we aren't doing any other operation but echoing to and from it.
+
+
+--------------------------------------------------------------------------------
 version 0.6.0 - Apr 14, 2016
 -- General --
    - Gosh now accepts the long options.
