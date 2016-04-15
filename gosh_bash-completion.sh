@@ -46,12 +46,26 @@ _gosh()
     COMPREPLY=()
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
-    opts="$(gosh-core gosh_opt_list no-colors)" #List in short way without colors.
-    
-    if [[ ${cur} == * ]] ; then
+
+    #Short options
+    if [[ "$cur" == - ]]; then
+        COMPREPLY=( $( compgen -W '-h -v -l -L -r -a -p -n -e' -- "$cur" ) )
+        return 0;
+
+    #Long Options.
+    elif [[ "$cur" == -* ]]; then
+        COMPREPLY=( $( compgen -W '--help --version --list --list-long --remove
+        --add --update --print --no-colors --exists' -- "$cur" ) )
+        return 0;
+
+    #Bookmarks.
+    else
+        opts="$(gosh-core gosh_opt_list no-colors)" #List in short way without colors.
         COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
         return 0
     fi
+
+    return 1;
 }
 
 complete -F _gosh gosh
