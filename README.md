@@ -152,7 +152,7 @@ To specify other file use ```BASH_PROFILE=/path/to/profile```
 
 ## Dependencies:
 
-There is no dependency for ``gosh``.
+There is no dependency for ```gosh```.
 
 
 
