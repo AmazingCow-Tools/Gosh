@@ -50,6 +50,13 @@ function gosh
 {
     local GOSH_CORE=gosh-core
 
+    local SHORT_OPT="hvarulLnpe"
+    local LONG_OPT="help,version,list,list-long,remove,add,update,print,no-colors,exists";
+
+    local RESULT=$(getopt -q --options $SHORT_OPT --longoptions $LONG_OPT -- "$@")
+    set -- $RESULT; #Set the result as it was the cmdline args...
+
+
     #The command line options that we can accept.
     #They are set with 0 meaning that they're disabled.
     #Only NO_COLORS options that are set with empty string
@@ -66,32 +73,27 @@ function gosh
     local OPT_EXISTS_BOOKMARK=0;
 
     #No args, just list the bookmarks.
-    if [ $# -eq 0 ]; then
+    if [ $# -eq 1 ]; then
         $GOSH_CORE "gosh_opt_list";
         return;
     fi;
 
-    #Parse the command line options.
-    while getopts :hvarulLnpe FLAG; do
-        case $FLAG in
-             h) OPT_HELP=1                ;;
-             v) OPT_VERSION=1             ;;
-             l) OPT_LIST=1                ;;
-             L) OPT_LIST_LONG=1           ;;
-             r) OPT_REMOVE=1              ;;
-             a) OPT_ADD=1                 ;;
-             u) OPT_UPDATE=1              ;;
-             p) OPT_PRINT=1               ;;
-             n) OPT_NO_COLORS="no-colors" ;;
-             e) OPT_EXISTS_BOOKMARK=1     ;;
-            \?) OPT_HELP=1                ;;
+    while [ $# -gt 0 ]; do
+        case $1 in
+            -h | --help      ) OPT_HELP=1                ;;
+            -v | --version   ) OPT_VERSION=1             ;;
+            -l | --list      ) OPT_LIST=1                ;;
+            -L | --list-long ) OPT_LIST_LONG=1           ;;
+            -r | --remove    ) OPT_REMOVE=1              ;;
+            -a | --add       ) OPT_ADD=1                 ;;
+            -u | --update    ) OPT_UPDATE=1              ;;
+            -p | --print     ) OPT_PRINT=1               ;;
+            -n | --no-colors ) OPT_NO_COLORS="no-colors" ;;
+            -e | --exists    ) OPT_EXISTS_BOOKMARK=1     ;;
+            -- ) shift; break;; #Remove the last -- and stop leting the $1..$n alone
         esac
-    done
-    shift $((OPTIND-1))  #This tells getopts to move on to the next argument.
-
-    #COWTODO: Check if this is ok to do?
-    unset OPTARG;
-    unset OPTIND;
+        shift
+    done;
 
     #Start checking with command line options were give.
     #All options are exclusive, meaning that they'll run and exit after.
