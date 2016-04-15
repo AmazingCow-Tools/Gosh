@@ -1,208 +1,241 @@
-Gosh
-====
+# Gosh
 
-Made with <3 by [Amazing Cow](http://www.amazingcow.com).
+**Made with <3 by [Amazing Cow](http://www.amazingcow.com).**
 
-<!-- ####################################################################### -->
-
-## Intro:
-
-A very basic shell book marker util.  
-
-Gosh is a program that makes the shell navigation a bit easier. 
-It's not a way that we liked yet, but is good enough to be used.
-
-The main drawback that we've found is as we cannot change the current 
-working directory of parent process we must do some workaround stuff to get 
-the program to work. To the end user this is __almost__ transparent but the 
-code solution isn't clean or elegant enough.   
-
-See the **Drawbacks** section to see what works and what not.
-
-Gosh was rewritten in the version 0.1x -> 0.2.x and now, we think, that the
-way that stuff is organized is much better.
 
 
 <!-- ####################################################################### -->
+<!-- ####################################################################### -->
 
-## How it works:
+## Description:
 
-The program has two "parts", the ```gosh-core``` and the ```gosh``` function. 
+```gosh``` - A basic shell book marker util.  
 
-The ```gosh-core``` is a python script located in ```/usr/local/bin``` that 
-handles everything about the application, except changing directory.   
-
-In Unix (and Linux and OSX and all :O) we cannot change the properties of the 
-parent process and since when we start a program a fork of current shell is 
-created we're unable to change the current directory of the parent shell.   
-This is not a problem to all operations of ```gosh``` like **add**, **remove**, 
-**update** and **list** the bookmarks.   
-But is a **BIG** problem in the main feature of ```gosh``` that is change the
-current directory.  
-
-To achieve this we create another file named ```gosh``` that is located inside 
-of ```/usr/local/bin```.   
-This file has only one function named ```gosh```.   
-The file ```/usr/local/bin/gosh``` is sourced inside a ```~/.bash_profile```, so 
-the function named ```gosh``` will take precedence in the name lookup.   
-This is did that way to pollute the less possible the "programs namespace".   
-The result is that when we're in a terminal and type ```gosh``` the function will 
-be executed not the file located at ```/usr/local/bin```.
-
-The ```gosh``` file and by extension the ```gosh``` function inside this file 
-has only one job - Parse the command line options and forward them to ```gosh-core```.   
-The ```gosh-core``` expects the options in a very strict way, so even is possible 
-to use ```gosh-core``` directly (but not for changing the directory) is 
-very unpleasant thing to do.
-
-All operations (**add**, **remove**, **update**, **list**) are handled only by 
-```gosh-core```, i.e. after finish the operation it'll will quit and ```gosh```
-will do nothing more.  
-But when user wants to change the directory the flow is a bit different. 
-First ```gosh``` parse the command line parameters and forward to ```gosh-core``` 
-the by it's  time check if a bookmark exists and if the path is valid. 
-After ```gosh-core``` complete its job it must "pass back" the information 
-to ```gosh```. 
-This is done by printing the info, but since we're in sub shell the user don't 
-get this output.   
-So after ```gosh-core``` print the information, ```gosh``` parse it and check 
-if the info is a valid path or a error message and print it again (But now 
-we're in the shell that originated the flow, so all output is visible to user). 
+```gosh``` is a program that makes the shell navigation a bit easier by 
+enabling you to assign meaningful names to paths and navigate around using 
+those meaningful names instead of the raw paths.
 
 
-Drawbacks:
------
-
-1. We must have too separated files. ```gosh-core``` and the ```gosh```.
-2. We must source the ```gosh``` file to make it "part" of the current shell. 
-Without this the changing directory stuff won't work.
-3. We have a file and a function with same name - ```/usr/local/bin/gosh``` and inside
-it the function ```gosh```. This works pretty well in the systems that we tried. (OSX 10.10,
-Ubuntu 15.04, Ubuntu 14.04 and CentOS) with the bash version that 
-came with those systems, but we're not 100% sure that is correct or will work at all times.
-4. This is a hack, works but isn't pretty - Has to be another prettier way.
-5. **GOSH WON'T WORK INSIDE SHELL SCRIPTS.**
-6. **The user must have** ```/usr/local/bin/gosh``` **sourced.**
+```gosh``` will try to autocomplete what is being typed.
 
 
-Motivation:
------
+<br>
 
-We work in several small projects along of the day and usually one big project. 
-Furthermore our directory tree is very deep.   
-An example: 
+As usual, you are **very welcomed** to **share** and **hack** it.
+
+
+
+<!-- ####################################################################### -->
+<!-- ####################################################################### -->
+
+## Usage:
+
+``` bash
+  gosh                        (Same as gosh -l)
+  gosh <name>                 (To change the directory)
+  gosh -h | -v                (Show help | version)
+  gosh -l | -L                (Show list of bookmarks)
+  gosh -p <name>              (Show path for bookmark)
+  gosh -e <path>              (Show bookmark for path)
+  gosh -a | -u <name> <path>  (Add | Update bookmark)
+  gosh -r <name>              (Remove the bookmark)
+
+Options:
+  *-h --help     : Show this screen.
+  *-v --version  : Show app version and copyright.
+
+  *-e --exists <path>  : Print the Bookmark for path.
+  *-p --print  <name>  : Print the path of Bookmark.
+
+  *-l --list       : Show all Bookmarks (no Paths).
+  *-L --list-long  : Show all Bookmarks and Paths.
+
+  *-a --add    <name> <path>  : Add a Bookmark with specified path.
+  *-r --remove <name>         : Remove a Bookmark.
+  *-u --update <name> <path>  : Update a Bookmark to path.
+
+  -n --no-colors : Print the output without colors.
+
+Notes:
+  If <path> is blank the current dir is assumed.
+
+  Options marked with * are exclusive, i.e. the gosh will run that
+  and exit after the operation.
 
 ```
-~/Documents/Projects/AmazingCow/OpenSource/MonsterFramework
-~/Documents/Projects/AmazingCow/OpenSource/AmazingBuild/PSDTools/PSDCutter
-~/Documents/Projects/AmazingCow/Proprietary/InHouse/XYZ/ABC
-~/Documents/Projects/AmazingCow/Proprietary/Client/Client1/A123
+
+### Examples:
+
+* Go some location of bookmark:
+    
+``` bash
+    # You can do this from anywhere. Now imagine that MyBookmark refers 
+    # to a very deeply path like :
+    #  /home/you/Documents/Projects/Games/OpenSource/TicTacToe/Linux/Images
+     
+    $ gosh MyBookmark 
+
+    # Is the same of doing a:
+    #   cd /home/you/Documents/Projects/Games/OpenSource/TicTacToe/Linux/Images
+    # The nicer thing is that gosh remembers the fullpath for a bookmark
+    # so it will always cd correctly :)
 ```
 
-... And so on.
-
-And is pain in butt to ```cd ..``` or ```cd ~/Documents/Projects/AmazingCow/...```
-just to change the working project.  
-I'd like to bookmark the directories and just type: 
-
-``` gosh MonsterFramework ```
-
-or 
-
-``` gosh Client_Project1 ```
-
-This is the main motivation for create this stuff.
-
-
-<!-- ####################################################################### -->
-
-## Examples:
 * Add a bookmark.
-        
-```
-gosh -a AnAwesomeGame .
-gosh -a PlaceThatIGoOften ~/SomeDirHere
+
+``` bash
+    $ gosh    -a AnAwesomeGame                   # Using short opt (Path is assumed to be "./").
+    $ gosh --add PlaceThatIGoOften ~/SomeDirHere # Using long opt  (gosh understands the relative path names).
 ```
     
 * Remove a bookmark.
 
-```
-gosh -r MyAwesomeGame 
+``` bash
+    $ gosh       -r IDontLikeThisBookmark # Short opt.
+    $ gosh --remove UnusedBookmarkName    # Long opt.
 ```
 
 * Update a bookmark.
 
-```
-gosh -u MyAwesomeGame ~/NewPath
+``` bash
+    $ gosh      -u MyAwesomeGame ~/NewPath      # Short opt, relative paths.
+    $ gosh -update MyAwesomeGame2 /home/me/game # Long opt, absolute paths are ok too.
 ```
     
 * List all the bookmarks.
     
-```
-gosh -l 
-```
-    
-* Go some bookmark:
-    
-```
-gosh AValidBookmark
-```
+``` bash
+    $ gosh    -l # Short opt, Will list only the bookmark names.
+    $ gosh -list # Ditto but with long opt.
 
-<!-- ####################################################################### -->    
-    
-## Status:
-We're happy using gosh in a OSX 10.10, UbuntuMate 15.04, Ubuntu 14.04, Xubuntu
-Linux 14.10 and CentOS (our web hosting).      
-Up to date we don't have found any "bug" (but I'm sure that they are there, 
-hidden, waiting for just one more user install this to goes out and 
-mess everything :D ).
+    $ gosh -L         # Short opt, Will list the bookmarks and paths.
+    $ gosh -list-long # Long opt, Will list the bookmarks and paths.
+```
 
 
 <!-- ####################################################################### -->
+<!-- ####################################################################### -->
 
-## Installation:
-Use the Makefile:
+## Install:
 
+Use the Mafefile.
+
+``` bash
+    make install
 ```
-    make install 
-```
 
-To uninstall ```gosh``` using the makefile you can use:
+Or to uninstall
 
-```
+``` bash
     make uninstall
 ```
 
-The install/uninstall targets accepts the file that gosh will be sourced, the 
-default is ```~/.bash_profile```.   
-To specify other file use ```BASH_PROFILE=your_bash_profile_here```
+### Notes:
 
-A bash-completion script is also provided if your system supports.  
+* The install / uninstall targets accepts the file that gosh will be sourced, 
+the default is ```~/.bash_profile```.   
+To specify other file use ```BASH_PROFILE=/path/to/profile```
 
-By default it will get the installation running the command:   
+* A bash-completion script is also provided if your system supports.   
+  By default it will get the installation running the command:   
+  ```pkg-config --variable=completionsdir bash-completion```   
+   You can change the installation location passing another path as:   
+   ```BASH_COMPLETION_DIR=/path/to/completion/dir```
 
-``` pkg-config --variable=completionsdir bash-completion ```   
-
-You can change the installation location passing another path as:   
-
-``` BASH_COMPLETION_DIR=your_location_here ```
-
-##### Note 
-The makefile will create backups before doing the operations.
+* The install / uninstall targets make backups of the sourced file.   
+  They are located in ```~/.bash_profile_gosh_backup```
 
 
+
+<!-- ####################################################################### -->
+<!-- ####################################################################### -->
+
+## Dependencies:
+
+There is no dependency for ``gosh``.
+
+
+
+<!-- ####################################################################### -->
+<!-- ####################################################################### -->
+
+## Environment and Files: 
+
+### Files:
+
+* ```~/.cowgoshrc``` - Directory containing ```gosh``` info.
+* ```~/.cowgoshrc/goshrc.txt``` - ```gosh``` bookmark list.
+
+* ```/path/for/bash/completion/gosh``` - The ```gosh``` autocompletion helper   
+  Note that this is only installed on supported systems.
+
+
+### Environments:
+
+* ```gosh``` exposes the gosh function.
+
+
+
+<!-- ####################################################################### -->
 <!-- ####################################################################### -->
 
 ## License:
+
 This software is released under GPLv3.
 
 
+
+<!-- ####################################################################### -->
 <!-- ####################################################################### -->
 
 ## TODO:
-Check the TODO file.
+
+Check the TODO file for general things.
+
+This projects uses the COWTODO tags.   
+So install [cowtodo](http://www.github.com/AmazingCow-Tools/COWTODO.html) and run:
+
+``` bash
+$ cd path/for/the/project
+$ cowtodo 
+```
+
+That's gonna give you all things to do :D.
 
 
+
+<!-- ####################################################################### -->
+<!-- ####################################################################### -->
+
+## BUGS:
+
+We strive to make all our code the most bug-free as possible - But we know 
+that few of them can pass without we notice ;).
+
+Please if you find any bug report to [bugs_opensource@amazingcow.com]() 
+with the name of this project and/or create an issue here in Github.
+
+
+
+<!-- ####################################################################### -->
+<!-- ####################################################################### -->
+
+## Source Files:
+
+* AUTHORS.txt
+* CHANGELOG.txt
+* COPYING.txt
+* gosh_bash-completion.sh
+* gosh-core.py*
+* gosh.sh*
+* Makefile
+* OLDREADME.md
+* README.md
+* TODO.txt 
+
+
+
+<!-- ####################################################################### -->
 <!-- ####################################################################### -->
 
 ## Others:
