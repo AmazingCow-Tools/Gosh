@@ -253,36 +253,46 @@ def print_fatal(msg):
 
 def print_help():
     print """Usage:
-  gosh
-  gosh <Name> | <Path>
-  gosh [-hv] [-n] [-lL] [-p <Name>] [-e <Path>] [-au <Name> <Path>] [-r <Name>]
+  gosh                        (Same as gosh -l)
+  gosh <name>                 (To change the directory)
+  gosh -h | -v                (Show help | version)
+  gosh -l | -L                (Show list of bookmarks)
+  gosh -p <name>              (Show path for bookmark)
+  gosh -e <path>              (Show bookmark for path)
+  gosh -a | -u <name> <path>  (Add | Update bookmark)
+  gosh -r <name>              (Remove the bookmark)
 
 Options:
- *-h               : Show this screen.
- *-v               : Show app version and copyright.
- *-p <Name>        : Print the path of Bookmark.
- *-e <Path>        : Print the Bookmark for path.
- *-a <Name> <Path> : Add a Bookmark with specified path.
- *-r <Name>        : Remove a Bookmark.
- *-u <Name> <Path> : Update a Bookmark to path.
- *-l               : Show all Bookmarks (no Paths).
- *-L               : Show all Bookmarks and Paths.
-  -n               : Print the output without colors.
+  *-h --help     : Show this screen.
+  *-v --version  : Show app version and copyright.
+
+  *-e --exists <path>  : Print the Bookmark for path.
+  *-p --print  <name>  : Print the path of Bookmark.
+
+  *-l --list       : Show all Bookmarks (no Paths).
+  *-L --list-long  : Show all Bookmarks and Paths.
+
+  *-a --add    <name> <path>  : Add a Bookmark with specified path.
+  *-r --remove <name>         : Remove a Bookmark.
+  *-u --update <name> <path>  : Update a Bookmark to path.
+
+  -n --no-colors : Print the output without colors.
 
 Notes:
-  If <Path> is blank the current dir is assumed.
+  If <path> is blank the current dir is assumed.
 
   Options marked with * are exclusive, i.e. the gosh will run that
-  and exit successfully after the operation.
+  and exit after the operation.
 """
     exit(0);
 
 def print_version():
     print "\n".join([
-        "gosh - 0.5.0 - N2OMatt <n2omatt@amazingcow.com>",
+        "gosh - 0.6.0 - N2OMatt <n2omatt@amazingcow.com>",
         "Copyright (c) 2015, 2016 - Amazing Cow",
         "This is a free software (GPLv3) - Share/Hack it",
         "Check opensource.amazingcow.com for more :)"]);
+
     exit(0);
 
 
