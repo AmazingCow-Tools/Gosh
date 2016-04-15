@@ -240,6 +240,9 @@ def canonize_path(path):
 
     return path;
 
+def remove_enclosing_quotes(value):
+    return value.strip("'");
+
 
 ################################################################################
 ## Print Functions                                                            ##
@@ -387,9 +390,11 @@ def main():
         Globals.opt_no_colors = True;
         args.pop();
 
-    first_arg  = args[0];
-    second_arg = args[1] if len(args) > 1 else "";
-    third_arg  = args[2] if len(args) > 2 else "";
+    #gosh.sh is using getopt(1) and it passes the arguments inside a pair
+    #of single quotes - This method will remove them.
+    first_arg  = remove_enclosing_quotes(args[0]);
+    second_arg = remove_enclosing_quotes(args[1]) if len(args) > 1 else "";
+    third_arg  = remove_enclosing_quotes(args[2]) if len(args) > 2 else "";
 
     #All the command line options are exclusive operations. i.e
     #they will run the requested command and exit after it.
@@ -425,6 +430,7 @@ def main():
             msg = "Bookmark ({}) doesn't exists.".format(C.blue(second_arg));
             print msg;
             exit(1);
+
 
         #Bookmark exists, check if path is valid.
         bookmark_path = path_for_bookmark(second_arg);
