@@ -30,7 +30,7 @@ As usual, you are **very welcomed** to **share** and **hack** it.
 
 ## Usage:
 
-``` bash
+``` 
   gosh                        (Same as gosh -l)
   gosh <name>                 (To change the directory)
   gosh -h | -v                (Show help | version)
@@ -138,12 +138,14 @@ To specify other file use ```BASH_PROFILE=/path/to/profile```
 
 * A bash-completion script is also provided if your system supports.   
   By default it will get the installation running the command:   
-  ```pkg-config --variable=completionsdir bash-completion```   
+```pkg-config --variable=completionsdir bash-completion```   
    You can change the installation location passing another path as:   
-   ```BASH_COMPLETION_DIR=/path/to/completion/dir```
+``` BASH_COMPLETION_DIR=/path/to/completion/dir ``` 
+
 
 * The install / uninstall targets make backups of the sourced file.   
   They are located in ```~/.bash_profile_gosh_backup```
+
 
 
 
@@ -193,7 +195,7 @@ This software is released under GPLv3.
 Check the TODO file for general things.
 
 This projects uses the COWTODO tags.   
-So install [cowtodo](http://www.github.com/AmazingCow-Tools/COWTODO.html) and run:
+So install [cowtodo](http://www.github.com/AmazingCow-Tools/COWTODO/) and run:
 
 ``` bash
 $ cd path/for/the/project
