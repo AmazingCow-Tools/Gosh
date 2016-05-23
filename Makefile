@@ -41,7 +41,7 @@
 ## Vars ##
 BASH_PROFILE=~/.bash_profile
 BASH_COMPLETION_DIR=`pkg-config --variable=completionsdir bash-completion`
-
+DESTDIR=/usr/local/bin
 
 ################################################################################
 ## Default Targets                                                            ##
@@ -57,11 +57,11 @@ install: install-gosh install-completion install-make-backup
 
 install-gosh:
 	@ echo "---> Install gosh."
-	sudo cp -f ./gosh-core.py  /usr/local/bin/gosh-core
-	sudo cp -f ./gosh.sh       /usr/local/bin/gosh
+	sudo cp -f ./gosh-core.py  $(DESTDIR)/gosh-core
+	sudo cp -f ./gosh.sh       $(DESTDIR)/gosh
 
-	sudo chmod 747 /usr/local/bin/gosh-core
-	sudo chmod 747 /usr/local/bin/gosh
+	sudo chmod 747 $(DESTDIR)/gosh-core
+	sudo chmod 747 $(DESTDIR)/gosh
 
 	@ echo "---> [Done]"
 
@@ -98,8 +98,8 @@ uninstall: uninstall-gosh uninstall-completion uninstall-make-backup
 
 uninstall-gosh:
 	@ echo "---> Uninstall gosh."
-	sudo rm -f  /usr/local/bin/gosh-core
-	sudo rm -f  /usr/local/bin/gosh
+	sudo rm -f  $(DESTDIR)/gosh-core
+	sudo rm -f  $(DESTDIR)/gosh
 	@ echo "---> [Done]"
 
 uninstall-completion:
