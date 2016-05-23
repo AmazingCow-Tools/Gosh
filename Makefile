@@ -57,18 +57,18 @@ install: install-gosh install-completion install-make-backup
 
 install-gosh:
 	@ echo "---> Install gosh."
-	sudo cp -f ./gosh-core.py  $(DESTDIR)/gosh-core
-	sudo cp -f ./gosh.sh       $(DESTDIR)/gosh
+	cp -f ./gosh-core.py  $(DESTDIR)/gosh-core
+	cp -f ./gosh.sh       $(DESTDIR)/gosh
 
-	sudo chmod 747 $(DESTDIR)/gosh-core
-	sudo chmod 747 $(DESTDIR)/gosh
+	chmod 747 $(DESTDIR)/gosh-core
+	chmod 747 $(DESTDIR)/gosh
 
 	@ echo "---> [Done]"
 
 install-completion:
 	@ echo "\n---> Install the bash completion script at ($(BASH_COMPLETION_DIR))."
-	@ if [ -d $(BASH_COMPLETION_DIR) ]; then \
-	   sudo cp -f ./gosh_bash-completion.sh $(BASH_COMPLETION_DIR)/gosh; \
+	@ if [ -n "$(BASH_COMPLETION_DIR)" ]; then \
+	   cp -f ./gosh_bash-completion.sh $(BASH_COMPLETION_DIR)/gosh; \
 	else \
 	   echo "[SKIPPING] $(BASH_COMPLETION_DIR) does not exists..."; \
 	   echo "You may want set BASH_COMPLETION_DIR to the actual dir."; \
@@ -85,7 +85,7 @@ install-make-backup:
 	rm ~/.gosh_temp
 
 	echo "## AmazingCow - Gosh ##"    >> $(BASH_PROFILE)
-	echo "source /usr/local/bin/gosh" >> $(BASH_PROFILE)
+	echo "source $(DESTDIR)/gosh" >> $(BASH_PROFILE)
 
 	@ echo "---> [Done]"
 
@@ -98,14 +98,14 @@ uninstall: uninstall-gosh uninstall-completion uninstall-make-backup
 
 uninstall-gosh:
 	@ echo "---> Uninstall gosh."
-	sudo rm -f  $(DESTDIR)/gosh-core
-	sudo rm -f  $(DESTDIR)/gosh
+	rm -f  $(DESTDIR)/gosh-core
+	rm -f  $(DESTDIR)/gosh
 	@ echo "---> [Done]"
 
 uninstall-completion:
 	@echo "\n---> Remove the bash completion script at ($(BASH_COMPLETION_DIR))."
 	@if [ -f $(BASH_COMPLETION_DIR)/gosh ]; then \
-	   sudo rm -f $(BASH_COMPLETION_DIR)/gosh; \
+	   rm -f $(BASH_COMPLETION_DIR)/gosh; \
 	else \
 	   echo "[SKIPPING] $(BASH_COMPLETION_DIR)/gosh does not exists..."; \
 	   echo "You may want set BASH_COMPLETION_DIR to the actual dir."; \
