@@ -118,9 +118,9 @@ class C:
 def check_rc_files():
     #This will ensure that the RC path and file exists.
     if(not os.path.isdir(Constants.PATH_DIR_RC)):
-        checked_system("mkdir -p {}".format(Constants.PATH_DIR_RC));
+        checked_system("mkdir -p {0}".format(Constants.PATH_DIR_RC));
     if(not os.path.isfile(Constants.PATH_FILE_RC)):
-        checked_system("touch {}".format(Constants.PATH_FILE_RC));
+        checked_system("touch {0}".format(Constants.PATH_FILE_RC));
 
 def read_bookmarks():
     #Check if rc file exists...
@@ -145,14 +145,14 @@ def read_bookmarks():
         #Failed to unpack, this is because the bookmarks aren't in form of
         #   Name SEPARATOR Path.
         #So state it to user, so he could correct manually.
-        help_msg = "{} {} {} {}".format("Check if all values are in form of",
-                                        C.blue("BookmarkName"),
-                                        C.magenta(Constants.BOOKMARK_SEPARATOR),
-                                        C.blue("BookmarkPath"));
+        help_msg = "{0} {1} {2} {3}".format("Check if all values are in form of",
+                                            C.blue("BookmarkName"),
+                                            C.magenta(Constants.BOOKMARK_SEPARATOR),
+                                            C.blue("BookmarkPath"));
 
-        msg = "{} ({})\n{}".format("Bookmarks file is corrupted.",
-                                    C.blue(Constants.PATH_FILE_RC),
-                                    help_msg);
+        msg = "{0} ({1})\n{2}".format("Bookmarks file is corrupted.",
+                                      C.blue(Constants.PATH_FILE_RC),
+                                      help_msg);
         print_fatal(msg);
 
     finally:
@@ -163,7 +163,7 @@ def write_bookmarks():
     #who wants to mess with them in an editor.
     bookmarks_str = "";
     for key in sorted(Globals.bookmarks.keys()):
-        bookmarks_str += "{} : {}\n".format(key,Globals.bookmarks[key]);
+        bookmarks_str += "{0} : {1}\n".format(key,Globals.bookmarks[key]);
 
     #Check if rc file exists...
     check_rc_files();
@@ -174,7 +174,7 @@ def write_bookmarks():
         bookmarks_file.write(bookmarks_str);
 
     except Exception, e:
-        print_fatal("Error while writing file. {}".format(str(e)));
+        print_fatal("Error while writing file. {0}".format(str(e)));
 
     finally:
         bookmarks_file.close();
@@ -186,7 +186,7 @@ def write_bookmarks():
 ################################################################################
 def checked_system(cmd, expected_val = 0):
     if(os.system(cmd) != expected_val):
-        print_fatal("Error while executing command ({}).".format(C.red(cmd)));
+        print_fatal("Error while executing command ({0}).".format(C.red(cmd)));
 
 def bookmark_exists(name):
     read_bookmarks();
@@ -218,21 +218,21 @@ def ensure_valid_bookmark_name_or_die(name):
     #Check if this name is a valid name.
     if(((Constants.OUTPUT_META_CHAR   in name) or
         (Constants.BOOKMARK_SEPARATOR in name))):
-        print_fatal("{} ('{}', '{}') chars.".format("Bookmark name cannot contains",
-                                                    Constants.OUTPUT_META_CHAR,
-                                                    Constants.BOOKMARK_SEPARATOR));
+        print_fatal("{0} ('{1}', '{2}') chars.".format("Bookmark name cannot contains",
+                                                       Constants.OUTPUT_META_CHAR,
+                                                       Constants.BOOKMARK_SEPARATOR));
 
 def ensure_valid_path_or_die(path):
     if(not os.path.isdir(path)):
-        print_fatal("Path ({}) is invalid.".format(C.magenta(path)));
+        print_fatal("Path ({0}) is invalid.".format(C.magenta(path)));
 
 
 def ensure_bookmark_existance_or_die(name, bookmark_shall_exists):
     if(bookmark_exists(name) and bookmark_shall_exists == False):
-        print_fatal("Bookmark ({}) already exists.".format(C.blue(name)));
+        print_fatal("Bookmark ({0}) already exists.".format(C.blue(name)));
 
     if(not bookmark_exists(name) and bookmark_shall_exists == True):
-        print_fatal("Bookmark ({}) doesn't exists.".format(C.blue(name)));
+        print_fatal("Bookmark ({0}) doesn't exists.".format(C.blue(name)));
 
 def canonize_path(path):
     path = path.lstrip().rstrip();
@@ -248,7 +248,7 @@ def remove_enclosing_quotes(value):
 ## Print Functions                                                            ##
 ################################################################################
 def print_fatal(msg):
-    print "{} {}".format(C.red("[FATAL]"), msg);
+    print "{0} {1}".format(C.red("[FATAL]"), msg);
     exit(1);
 
 def print_help():
@@ -339,8 +339,8 @@ def add_bookmark(name, path):
     print abs_path;
     #Name and Path are valid... Add it and inform the user.
     Globals.bookmarks[name] = abs_path;
-    msg = "Bookmark added:\n  ({}) - ({})".format(C.blue(name),
-                                                  C.magenta(abs_path));
+    msg = "Bookmark added:\n  ({0}) - ({1})".format(C.blue(name),
+                                                    C.magenta(abs_path));
     print msg;
 
     write_bookmarks(); #Save to file
@@ -358,7 +358,7 @@ def remove_bookmark(name):
 
     #Bookmark exists... Remove it and inform the user.
     del Globals.bookmarks[name];
-    print "Bookmark removed:\n  ({})".format(C.blue(name));
+    print "Bookmark removed:\n  ({0})".format(C.blue(name));
 
     write_bookmarks(); #Save to file
     exit(0);
@@ -379,8 +379,8 @@ def update_bookmark(name, path):
 
     #Bookmark exists and path is valid... Update it and inform the user.
     Globals.bookmarks[name] = abs_path;
-    msg = "Bookmark updated:\n  ({}) - ({})".format(C.blue(name),
-                                                    C.magenta(abs_path));
+    msg = "Bookmark updated:\n  ({0}) - ({1})".format(C.blue(name),
+                                                      C.magenta(abs_path));
     print msg;
 
     write_bookmarks(); #Save to file
@@ -428,7 +428,7 @@ def main():
             print "No bookmark";
             exit(1);
         else:
-            print "Bookmark: ({})".format(C.blue(bookmark_name));
+            print "Bookmark: ({0})".format(C.blue(bookmark_name));
             exit(0);
 
     #Print.
@@ -437,7 +437,7 @@ def main():
             print_fatal("Missing args - name.");
 
         if(not bookmark_exists(second_arg)):
-            msg = "Bookmark ({}) doesn't exists.".format(C.blue(second_arg));
+            msg = "Bookmark ({0}) doesn't exists.".format(C.blue(second_arg));
             print msg;
             exit(1);
 
@@ -445,9 +445,9 @@ def main():
         #Bookmark exists, check if path is valid.
         bookmark_path = path_for_bookmark(second_arg);
         if(not os.path.isdir(bookmark_path)):
-            msg = "Bookmark ({}) {} ({})".format(C.blue(second_arg),
-                                                 "exists but it's path is invalid.",
-                                                 C.magenta(bookmark_path));
+            msg = "Bookmark ({0}) {1} ({2})".format(C.blue(second_arg),
+                                                    "exists but it's path is invalid.",
+                                                    C.magenta(bookmark_path));
             print msg;
             exit(1);
 
@@ -464,4 +464,4 @@ if(__name__ == "__main__"):
     try:
         main();
     except Exception, e:
-        print_fatal("You should use gosh not gosh-core. (Exception: ({}))".format(e));
+        print_fatal("You should use gosh not gosh-core. (Exception: ({0}))".format(e));
