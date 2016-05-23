@@ -1,7 +1,28 @@
 ================================================================================
 == Start v0.6.x                                                               ==
 ================================================================================
-version 0.6.3 - Apr 14, 2016
+version 0.6.4 - May 23, 2016
+-- General --
+    - Update the installation stuff.
+      Now Gosh doesn't requires sudo to install.
+    - Make it compatible with python2.6.x
+
+    - Fix the dates on 0.6.3 version.
+
+-- Source --
+    Makefile
+      - Remove the sudo stuff.
+      - Fix the completions dir checking.
+      - Fix the bash profile source stuff.
+
+    gosh-core.py
+        - Update the version numbers.
+        - Add the index on str.format as
+          required for python2.6
+
+
+--------------------------------------------------------------------------------
+version 0.6.3 - May 23, 2016
 -- General --
     Now Gosh's makefile accepts the location to install or uninstall.
 
