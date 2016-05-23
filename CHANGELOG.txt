@@ -1,6 +1,18 @@
 ================================================================================
 == Start v0.6.x                                                               ==
 ================================================================================
+version 0.6.3 - Apr 14, 2016
+-- General --
+    Now Gosh's makefile accepts the location to install or uninstall.
+
+-- Source --
+    Makefile
+        - Make the install and uninstall target read the value
+          from the DESTDIR var.
+    gosh-core.py
+        - Update the version numbers.
+
+--------------------------------------------------------------------------------
 version 0.6.2 - Apr 14, 2016
 -- General --
     Fix some errors on README.
