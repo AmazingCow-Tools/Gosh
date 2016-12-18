@@ -1,4 +1,19 @@
 ================================================================================
+== Start v0.7.x                                                               ==
+================================================================================
+version 0.7.0 - Dec 18, 2016
+-- General --
+    - Update the default bash profile to ~/.bashrc
+      OSX users should use the BASH_PROFILE=~/.bash_profile
+      since as default OSX use this file.
+    - Update the README to reflect the changes.
+
+-- README --
+    - Update the info.
+    - Fix some typos.
+
+
+================================================================================
 == Start v0.6.x                                                               ==
 ================================================================================
 version 0.6.4 - May 23, 2016

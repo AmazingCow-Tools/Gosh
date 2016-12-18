@@ -39,7 +39,7 @@
 ##----------------------------------------------------------------------------##
 
 ## Vars ##
-BASH_PROFILE=~/.bash_profile
+BASH_PROFILE=~/.bashrc
 BASH_COMPLETION_DIR=`pkg-config --variable=completionsdir bash-completion`
 DESTDIR=/usr/local/bin
 

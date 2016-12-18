@@ -16,7 +16,7 @@ enabling you to assign meaningful names to paths and navigate around using
 those meaningful names instead of the raw paths.
 
 
-```gosh``` will try to autocomplete what is being typed.
+```gosh``` will try to auto complete what is being typed.
 
 
 <br>
@@ -133,8 +133,10 @@ Or to uninstall
 ### Notes:
 
 * The install / uninstall targets accepts the file that gosh will be sourced, 
-the default is ```~/.bash_profile```.   
-To specify other file use ```BASH_PROFILE=/path/to/profile```
+the default is ```~/.bashrc```.   
+To specify other file use ```BASH_PROFILE=/path/to/profile```   
+(**Notice for OSX users:** In OSX the profile is ```~/.bash_profile``` so, you 
+need to change it accordingly)
 
 * A bash-completion script is also provided if your system supports.   
   By default it will get the installation running the command:   
@@ -168,7 +170,7 @@ There is no dependency for ```gosh```.
 * ```~/.cowgoshrc``` - Directory containing ```gosh``` info.
 * ```~/.cowgoshrc/goshrc.txt``` - ```gosh``` bookmark list.
 
-* ```/path/for/bash/completion/gosh``` - The ```gosh``` autocompletion helper   
+* ```/path/for/bash/completion/gosh``` - The ```gosh``` auto completion helper   
   Note that this is only installed on supported systems.
 
 
