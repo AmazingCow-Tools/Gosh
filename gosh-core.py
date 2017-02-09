@@ -65,7 +65,7 @@ except Exception, e:
 ################################################################################
 class Constants:
     #Where the bookmarks will be stored.
-    PATH_DIR_RC  = "~/.cowgoshrc"
+    PATH_DIR_RC  = os.path.expanduser("~/.cowgoshrc");
     PATH_FILE_RC = os.path.expanduser(os.path.join(PATH_DIR_RC, "goshrc.txt"));
 
     #Some chars that are important to gosh.
@@ -118,9 +118,10 @@ class C:
 def check_rc_files():
     #This will ensure that the RC path and file exists.
     if(not os.path.isdir(Constants.PATH_DIR_RC)):
-        checked_system("mkdir -p {0}".format(Constants.PATH_DIR_RC));
+        os.makedirs(Constants.PATH_DIR_RC);
     if(not os.path.isfile(Constants.PATH_FILE_RC)):
-        checked_system("touch {0}".format(Constants.PATH_FILE_RC));
+        open(Constants.PATH_FILE_RC, "w").close();
+
 
 def read_bookmarks():
     #Check if rc file exists...
@@ -184,10 +185,6 @@ def write_bookmarks():
 ################################################################################
 ## Helper Functions                                                           ##
 ################################################################################
-def checked_system(cmd, expected_val = 0):
-    if(os.system(cmd) != expected_val):
-        print_fatal("Error while executing command ({0}).".format(C.red(cmd)));
-
 def bookmark_exists(name):
     read_bookmarks();
     return name in Globals.bookmarks.keys();
