@@ -1,6 +1,12 @@
 ================================================================================
 == Start v0.7.x                                                               ==
 ================================================================================
+version 0.7.1 - Fev 09, 2017
+-- General --
+  - Replace the calls to os.system to python functions.
+    They are buggy in Cygwin, but I hadn't time to investigate why.
+    With python functions everything seems ok.
+
 version 0.7.0 - Dec 18, 2016
 -- General --
     - Update the default bash profile to ~/.bashrc
