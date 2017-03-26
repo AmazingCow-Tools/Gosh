@@ -147,7 +147,7 @@ function gosh
         #The gosh-core call was successful?
         if [ $? = 0 ]; then
             #Change the directory.
-            cd $RET_VAL;
+            cd "$RET_VAL";
             if [ -z "$OPT_NO_COLORS" ]; then
                 echo "Gosh:"; tput setaf 5; echo " $RET_VAL"; tput sgr0;
             else
