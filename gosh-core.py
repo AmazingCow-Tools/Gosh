@@ -7,7 +7,7 @@
 ##            ███  █  █  ███        gosh-core.py                              ##
 ##            █ █        █ █        Gosh                                      ##
 ##             ████████████                                                   ##
-##           █              █       Copyright (c) 2015, 2016                  ##
+##           █              █       Copyright (c) 2015 - 2017                 ##
 ##          █     █    █     █      AmazingCow - www.AmazingCow.com           ##
 ##          █     █    █     █                                                ##
 ##           █              █       N2OMatt - n2omatt@amazingcow.com          ##
@@ -285,8 +285,8 @@ Notes:
 
 def print_version():
     print "\n".join([
-        "gosh - 0.6.4 - N2OMatt <n2omatt@amazingcow.com>",
-        "Copyright (c) 2015, 2016 - Amazing Cow",
+        "gosh - 0.7.2 - N2OMatt <n2omatt@amazingcow.com>",
+        "Copyright (c) 2015 - 2017 - Amazing Cow",
         "This is a free software (GPLv3) - Share/Hack it",
         "Check opensource.amazingcow.com for more :)"]);
 

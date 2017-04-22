@@ -6,7 +6,7 @@
 ##            ███  █  █  ███        gosh.sh                                   ##
 ##            █ █        █ █        Gosh                                      ##
 ##             ████████████                                                   ##
-##           █              █       Copyright (c) 2015, 2016                  ##
+##           █              █       Copyright (c) 2015 - 2017                 ##
 ##          █     █    █     █      AmazingCow - www.AmazingCow.com           ##
 ##          █     █    █     █                                                ##
 ##           █              █       N2OMatt - n2omatt@amazingcow.com          ##
