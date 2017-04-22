@@ -80,7 +80,7 @@ function check_arg
        return 1;
     fi;
 
-    echo "cmd: $cmd arg: $arg"
+    # echo "cmd: $cmd arg: $arg"
     return 0;
 }
 
@@ -230,10 +230,11 @@ function gosh
 
     ## Flags with 2 args.
     elif [ $OPT_ADD = 1 ]; then
-        # $ARG1 -> The name of bookmark.
-        # $ARG2 -> The path - This could be empty, gosh-core will handle this.
-        # $OPT_NO_COLORS -> empty if not defined by user.
-        $GOSH_CORE "gosh_opt_add" "$ARG1" "$ARG2" $OPT_NO_COLORS;
+        return 1;
+    #     # $ARG1 -> The name of bookmark.
+    #     # $ARG2 -> The path - This could be empty, gosh-core will handle this.
+    #     # $OPT_NO_COLORS -> empty if not defined by user.
+    #     $GOSH_CORE "gosh_opt_add" "$ARG1" "$ARG2" $OPT_NO_COLORS;
 
     elif [ $OPT_UPDATE = 1 ]; then
         # $ARG1 -> The name of bookmark.
