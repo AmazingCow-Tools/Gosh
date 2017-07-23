@@ -49,6 +49,7 @@ alias gosh-remove="gosh -r";
 alias gosh-update="gosh -u";
 alias gosh-go="gosh ";
 
+
 ################################################################################
 ## Helper Functions                                                           ##
 ################################################################################
@@ -59,8 +60,9 @@ function check_arg
 
     ## Empty args...
     if [ -z "$2" ]; then
-        echo "[FATAL] Option ($cmd) needs a argument.";
-        return 1;
+        arg=".";
+        # echo "[FATAL] Option ($cmd) needs a argument.";
+        # return 1;
     fi;
 
     ## Test the argument to check if this is a short flag.
@@ -83,6 +85,7 @@ function check_arg
     # echo "cmd: $cmd arg: $arg"
     return 0;
 }
+
 
 ################################################################################
 ## Gosh                                                                       ##

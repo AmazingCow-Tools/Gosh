@@ -44,7 +44,9 @@
 #         This will enable us to use the "same" paths on OSX and Linux.
 #COWTODO: Change the termcolor to cowtermcolor.
 
-## Imports ##
+################################################################################
+## Imports                                                                    ##
+################################################################################
 import os;
 import os.path;
 import sys;
@@ -181,7 +183,6 @@ def write_bookmarks():
         bookmarks_file.close();
 
 
-
 ################################################################################
 ## Helper Functions                                                           ##
 ################################################################################
@@ -222,7 +223,6 @@ def ensure_valid_bookmark_name_or_die(name):
 def ensure_valid_path_or_die(path):
     if(not os.path.isdir(path)):
         print_fatal("Path ({0}) is invalid.".format(C.magenta(path)));
-
 
 def ensure_bookmark_existance_or_die(name, bookmark_shall_exists):
     if(bookmark_exists(name) and bookmark_shall_exists == False):
