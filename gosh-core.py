@@ -193,14 +193,14 @@ def path_for_bookmark(name):
     return Globals.bookmarks[name];
 
 def bookmark_for_path(path):
-    if(path is None):
-        return None;
+    if(path is None or len(path) == 0):
+        path = ".";
 
     read_bookmarks();
     rel_path = make_relative_path(path);
 
     for bookmark_name in Globals.bookmarks.keys():
-        bookmark_path = make_relative_path(Globals.bookmarks[bookmark_name]);
+        bookmark_path = Globals.bookmarks[bookmark_name];
         if(bookmark_path == rel_path):
             return bookmark_name;
 
