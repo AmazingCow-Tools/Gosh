@@ -1,0 +1,5 @@
+- The relative paths on cygwin is wrong. It's saving:
+     ~/../../cygdrive/c/Users/n2omatt/Documents/Projects/N2OMatt/dots
+  Instead of saving:
+     ~/Documents/Projects/N2OMatt/dots
+--------------------------------------------------------------------------------
