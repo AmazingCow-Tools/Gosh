@@ -50,6 +50,7 @@ import os.path;
 import sys;
 import getopt;
 import pdb;
+import subprocess;
 
 #Termcolor isn't a standard module (but is really nice), so we must
 #support system that doens't has it. On those systems the colored,
@@ -83,6 +84,12 @@ class Constants:
     ACTION_UPDATE          = "gosh_opt_update";
     ACTION_PRINT           = "gosh_opt_print";
     ACTION_EXISTS_BOOKMARK = "gosh_opt_exists_bookmark";
+
+    #OSes names
+    OS_NAME_CYGWIN    = "cygwin";
+    OS_NAME_GNU_LINUX = "linux";
+    OS_NAME_NT        = "??????";
+    OS_NAME_OSX       = "??????";
 
 class Globals:
     bookmarks     = {};    #Our bookmarks dictionary.
@@ -236,14 +243,69 @@ def canonize_path(path):
 
     return path;
 
-def make_relative_path(path):
-    path      = path.lstrip().rstrip();
-    home_path = canonize_path("~");
+def get_os_name():
+    name = sys.platform;
+    if(Constants.OS_NAME_CYGWIN in name):
+        return Constants.OS_NAME_CYGWIN;
+    else:
+        raise NotImplementedError;
 
-    return "~/" + os.path.relpath(path, home_path);
+def make_relative_path(path):
+    path = path.lstrip().rstrip();
+
+    if(get_os_name() == Constants.OS_NAME_CYGWIN):
+        home_path = _get_home_path_for_cygwin(path);
+    else:
+        home_path = canonize_path("~");
+
+    rel_path = "~/" + os.path.relpath(path, home_path);
+
+    return rel_path;
 
 def remove_enclosing_quotes(value):
     return value.strip("'");
+
+
+################################################################################
+## Helper fuctions (Cygwin)                                                   ##
+################################################################################
+def _run_process(cmd):
+    process = subprocess.Popen(
+        [cmd],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        shell=True
+    );
+
+    return process.stdout.read().decode("UTF-8").replace("\n", "");
+
+def _get_home_path_for_cygwin(path):
+    ##COWNOTE(n2omatt): This is needed because in one configuration of
+    ## the home folder in cygwin makes the path looks wrong.
+    ## The situation is when the user set the its home folder to be a
+    ## symbolic link to a folder on NT.
+    ## For example if the user makes the home folder be:
+    ##    C:/Users/USERNAME
+    ## The realpath would be /cygdrive/c/Users/Username but yet the
+    ## unix tools would see the home folder as:
+    ##    /home/USERNAME
+    ## This way the os.path.relpath doesn't works as expected
+    ## making a bookmark of the path:
+    ##    $HOME/Documents/Projects/N2OMatt/dots
+    ## Be seen as:
+    ##    ~/../../cygdrive/c/Users/n2omatt/Documents/Projects/N2OMatt/dots
+    ## Instead of:
+    ##    ~/Documents/Projects/N2OMatt/dots
+    ##
+    ## So this function get's the REAL home path taking in account the
+    ## fact that the path might be on NT "field".
+    home_path = os.path.expanduser("~");
+
+    nt_home = _run_process("cygpath -w {0}".format(home_path));
+    nt_home = nt_home.replace("\\", "/");
+
+    unix_home = _run_process("cygpath -u {0}".format(nt_home));
+    return canonize_path(unix_home);
 
 
 ################################################################################
@@ -290,7 +352,7 @@ Notes:
 
 def print_version():
     print "\n".join([
-        "gosh - 0.7.3 - N2OMatt <n2omatt@amazingcow.com>",
+        "gosh - 0.7.4 - N2OMatt <n2omatt@amazingcow.com>",
         "Copyright (c) 2015 - 2017 - Amazing Cow",
         "This is a free software (GPLv3) - Share/Hack it",
         "Check opensource.amazingcow.com for more :)"]);
