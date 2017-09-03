@@ -51,6 +51,7 @@ import sys;
 import getopt;
 import pdb;
 import subprocess;
+from difflib import SequenceMatcher as SM;
 
 #Termcolor isn't a standard module (but is really nice), so we must
 #support system that doens't has it. On those systems the colored,
@@ -193,10 +194,42 @@ def write_bookmarks():
 ################################################################################
 def bookmark_exists(name):
     read_bookmarks();
-    return name in Globals.bookmarks.keys();
+    name = name_for_fuzzy_name(name);
+
+    if(name is None):
+        return False;
+    else:
+        return name in Globals.bookmarks.keys();
+
+def name_for_fuzzy_name(fuzzy_name):
+    best_score = 0;
+    best_name  = None;
+
+    for k in Globals.bookmarks.keys():
+        score = SM(None, k, fuzzy_name).ratio();
+        ## COWNOTE(n2omatt): For debug only...
+        # print "Name  : ", fuzzy_name;
+        # print "Key   : ", k;
+        # print "Score : ", score;
+        # print "BScore: ", best_score;
+        # print "--";
+
+        if(score > best_score):
+            best_name  = k;
+            best_score = score;
+
+        ## Best match...
+        ##   cannot be better.
+        if(best_score == 1):
+            return k;
+
+    return best_name;
+
+    return None;
 
 def path_for_bookmark(name):
     read_bookmarks();
+    name = name_for_fuzzy_name(name);
     return Globals.bookmarks[name];
 
 def bookmark_for_path(path):
@@ -204,11 +237,13 @@ def bookmark_for_path(path):
         path = ".";
 
     read_bookmarks();
-    rel_path = make_relative_path(path);
+    abs_path = canonize_path(path);
 
     for bookmark_name in Globals.bookmarks.keys():
         bookmark_path = Globals.bookmarks[bookmark_name];
-        if(bookmark_path == rel_path):
+        bookmark_path = canonize_path(bookmark_path);
+
+        if(bookmark_path == abs_path):
             return bookmark_name;
 
     return None;
@@ -415,6 +450,8 @@ def add_bookmark(name, path):
     exit(0);
 
 def remove_bookmark(name):
+    name = name_for_fuzzy_name(name);
+
     #Must be valid name.
     ensure_valid_bookmark_name_or_die(name);
 
