@@ -210,12 +210,7 @@ def write_bookmarks():
 ################################################################################
 def bookmark_exists(name):
     read_bookmarks();
-    name = name_for_fuzzy_name(name);
-
-    if(name is None):
-        return False;
-    else:
-        return name in Globals.bookmarks.keys();
+    return None if name is None else name in Globals.bookmarks.keys();
 
 def name_for_fuzzy_name(fuzzy_name):
     best_score = 0;
