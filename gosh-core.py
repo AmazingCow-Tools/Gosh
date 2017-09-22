@@ -507,6 +507,49 @@ def action_update_bookmark(name, path):
     write_bookmarks(); #Save to file
     exit(0);
 
+def action_bookmark_exists(path):
+    #Load from file.
+    read_bookmarks();
+
+    bookmark_name = bookmark_for_path(path);
+    if(bookmark_name is None):
+        print "No bookmark";
+        exit(1);
+    else:
+        print "Bookmark: ({0})".format(C.blue(bookmark_name));
+        exit(0);
+
+def action_print_bookmark(name):
+    #Load from file.
+    read_bookmarks();
+
+    if(len(name) == 0):
+        print_fatal("Missing args - name.");
+
+    name = name_for_fuzzy_name(name);
+
+    if(not bookmark_exists(name)):
+        msg = "Bookmark ({0}) doesn't exists.".format(C.blue(name));
+        print msg;
+        exit(1);
+
+    #Bookmark exists, check if path is valid.
+    bookmark_path = path_for_bookmark(name);
+    bookmark_path = canonize_path(bookmark_path);
+    if(not os.path.isdir(bookmark_path)):
+        msg = "Bookmark ({0}) {1} ({2})".format(
+            C.blue(name),
+            "exists but it's path is invalid.",
+            C.magenta(bookmark_path)
+        );
+        print msg;
+        exit(1);
+
+    #Bookmark and path are valid.
+    #Print the path to gosh shell script change the directory.
+    print bookmark_path;
+    exit(0);
+
 
 ################################################################################
 ## Script Initialization                                                      ##
@@ -536,13 +579,6 @@ def main():
     #List.
     if(Constants.ACTION_LIST      == first_arg): action_list_bookmarks();
     if(Constants.ACTION_LIST_LONG == first_arg): action_list_bookmarks(long=True);
-    if(Constants.ACTION_LIST      == first_arg): list_bookmarks();
-    if(Constants.ACTION_LIST_LONG == first_arg): list_bookmarks(long=True);
-
-    #Remove / Add / Update.
-    if(Constants.ACTION_REMOVE  == first_arg): remove_bookmark(second_arg);
-    if(Constants.ACTION_ADD     == first_arg): add_bookmark   (second_arg, third_arg);
-    if(Constants.ACTION_UPDATE  == first_arg): update_bookmark(second_arg, third_arg);
 
     #Add
     if(Constants.ACTION_ADD == first_arg):
@@ -553,43 +589,12 @@ def main():
     #Update
     if(Constants.ACTION_UPDATE == first_arg):
         action_update_bookmark(second_arg, third_arg);
-    #Exists Bookmark
+    #Exists
     if(Constants.ACTION_EXISTS_BOOKMARK == first_arg):
-        bookmark_name = bookmark_for_path(second_arg);
-        if(bookmark_name is None):
-            print "No bookmark";
-            exit(1);
-        else:
-            print "Bookmark: ({0})".format(C.blue(bookmark_name));
-            exit(0);
-
-    #Print.
+        action_bookmark_exists(second_arg);
+    #Print
     if(Constants.ACTION_PRINT == first_arg):
-        if(len(second_arg) == 0):
-            print_fatal("Missing args - name.");
-
-        if(not bookmark_exists(second_arg)):
-            msg = "Bookmark ({0}) doesn't exists.".format(C.blue(second_arg));
-            print msg;
-            exit(1);
-
-
-        #Bookmark exists, check if path is valid.
-        bookmark_path = path_for_bookmark(second_arg);
-        bookmark_path = canonize_path(bookmark_path);
-        if(not os.path.isdir(bookmark_path)):
-            msg = "Bookmark ({0}) {1} ({2})".format(
-                C.blue(second_arg),
-                "exists but it's path is invalid.",
-                C.magenta(bookmark_path)
-            );
-            print msg;
-            exit(1);
-
-        #Bookmark and path are valid.
-        #Print the path to gosh shell script change the directory.
-        print bookmark_path;
-        exit(0);
+        action_print_bookmark(second_arg);
 
 
 if(__name__ == "__main__"):
