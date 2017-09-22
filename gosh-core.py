@@ -468,7 +468,6 @@ def action_remove_bookmark(name):
     #Must be valid name.
     ensure_valid_bookmark_name_or_die(name);
 
-
     #Check if we actually have a bookmark with this name.
     ensure_bookmark_existance_or_die(name, bookmark_shall_exists=True);
 
@@ -482,6 +481,8 @@ def action_remove_bookmark(name):
 def action_update_bookmark(name, path):
     if(path is None or len(path) == 0):
         path = ".";
+
+    name = name_for_fuzzy_name(name);
 
     #Must be valid name.
     ensure_valid_bookmark_name_or_die(name);
