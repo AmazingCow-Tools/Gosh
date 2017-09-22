@@ -240,7 +240,6 @@ def name_for_fuzzy_name(fuzzy_name):
 
 def path_for_bookmark(name):
     read_bookmarks();
-    name = name_for_fuzzy_name(name);
     return Globals.bookmarks[name];
 
 def bookmark_for_path(path):
