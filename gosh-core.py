@@ -290,8 +290,9 @@ def canonize_path(path):
 
 def get_os_name():
     name = sys.platform;
-    if(Constants.OS_NAME_CYGWIN in name):
-        return Constants.OS_NAME_CYGWIN;
+    pdb.set_trace();
+    if  (Constants.OS_NAME_CYGWIN    in name): return Constants.OS_NAME_CYGWIN;
+    elif(Constants.OS_NAME_GNU_LINUX in name): return Constants.OS_NAME_GNU_LINUX;
     else:
         raise NotImplementedError;
 
