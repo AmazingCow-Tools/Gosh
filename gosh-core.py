@@ -409,7 +409,7 @@ def print_version():
 ################################################################################
 ## Action Functions                                                           ##
 ################################################################################
-def list_bookmarks(long = False):
+def action_list_bookmarks(long = False):
     read_bookmarks();
 
     if(len(Globals.bookmarks) == 0):
@@ -432,7 +432,7 @@ def list_bookmarks(long = False):
 
     exit(0);
 
-def add_bookmark(name, path):
+def action_add_bookmark(name, path):
     if(path is None or len(path) == 0):
         path = ".";
 
@@ -460,7 +460,7 @@ def add_bookmark(name, path):
     write_bookmarks(); #Save to file
     exit(0);
 
-def remove_bookmark(name):
+def action_remove_bookmark(name):
     name = name_for_fuzzy_name(name);
 
     #Must be valid name.
@@ -479,7 +479,7 @@ def remove_bookmark(name):
     write_bookmarks(); #Save to file
     exit(0);
 
-def update_bookmark(name, path):
+def action_update_bookmark(name, path):
     if(path is None or len(path) == 0):
         path = ".";
 
@@ -534,6 +534,8 @@ def main():
     if(Constants.ACTION_VERSION == first_arg): print_version();
 
     #List.
+    if(Constants.ACTION_LIST      == first_arg): action_list_bookmarks();
+    if(Constants.ACTION_LIST_LONG == first_arg): action_list_bookmarks(long=True);
     if(Constants.ACTION_LIST      == first_arg): list_bookmarks();
     if(Constants.ACTION_LIST_LONG == first_arg): list_bookmarks(long=True);
 
@@ -542,6 +544,15 @@ def main():
     if(Constants.ACTION_ADD     == first_arg): add_bookmark   (second_arg, third_arg);
     if(Constants.ACTION_UPDATE  == first_arg): update_bookmark(second_arg, third_arg);
 
+    #Add
+    if(Constants.ACTION_ADD == first_arg):
+        action_add_bookmark (second_arg, third_arg);
+    #Remove
+    if(Constants.ACTION_REMOVE == first_arg):
+        action_remove_bookmark(second_arg);
+    #Update
+    if(Constants.ACTION_UPDATE == first_arg):
+        action_update_bookmark(second_arg, third_arg);
     #Exists Bookmark
     if(Constants.ACTION_EXISTS_BOOKMARK == first_arg):
         bookmark_name = bookmark_for_path(second_arg);
