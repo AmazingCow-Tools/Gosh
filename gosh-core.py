@@ -461,13 +461,13 @@ def action_add_bookmark(name, path):
     exit(0);
 
 def action_remove_bookmark(name):
+    #Load from file.
+    read_bookmarks();
     name = name_for_fuzzy_name(name);
 
     #Must be valid name.
     ensure_valid_bookmark_name_or_die(name);
 
-    #Load from file.
-    read_bookmarks();
 
     #Check if we actually have a bookmark with this name.
     ensure_bookmark_existance_or_die(name, bookmark_shall_exists=True);
