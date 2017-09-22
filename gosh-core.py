@@ -87,10 +87,26 @@ class Constants:
     ACTION_EXISTS_BOOKMARK = "gosh_opt_exists_bookmark";
 
     #OSes names
+    ##  Thanks to ICB on StackOverflow
+    ##      https://stackoverflow.com/a/13874620/5482197
+    ## .---------------------.----------.
+    ## | System              | Value    |
+    ## |---------------------|----------|
+    ## | Linux (2.x and 3.x) | linux2   |
+    ## | Windows             | win32    |
+    ## | Windows/Cygwin      | cygwin   |
+    ## | Mac OS X            | darwin   |
+    ## | OS/2                | os2      |
+    ## | OS/2 EMX            | os2emx   |
+    ## | RiscOS              | riscos   |
+    ## | AtheOS              | atheos   |
+    ## | FreeBSD 7           | freebsd7 |
+    ## | FreeBSD 8           | freebsd8 |
+    ## '---------------------'----------'
     OS_NAME_CYGWIN    = "cygwin";
     OS_NAME_GNU_LINUX = "linux";
-    OS_NAME_NT        = "??????";
-    OS_NAME_OSX       = "??????";
+    OS_NAME_NT        = "win32";
+    OS_NAME_OSX       = "darwin";
 
 class Globals:
     bookmarks     = {};    #Our bookmarks dictionary.
