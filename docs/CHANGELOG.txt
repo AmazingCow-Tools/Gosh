@@ -1,6 +1,26 @@
 ================================================================================
 == Start v0.7.x                                                               ==
 ================================================================================
+version 0.7.4 - Sep 02, 2017
+-- General --
+  [BUG FIX]: On cygwin the paths were working but wrong.
+  In one configuration of the home folder in cygwin makes the
+  path looks wrong.
+  The situation is when the user set the its home folder to be a
+  symbolic link to a folder on NT.
+  For example if the user makes the home folder be:
+     C:/Users/USERNAME
+  The realpath would be /cygdrive/c/Users/Username but yet the
+  unix tools would see the home folder as:
+     /home/USERNAME
+  This way the os.path.relpath doesn't works as expected
+  making a bookmark of the path:
+     $HOME/Documents/Projects/N2OMatt/dots
+  Be seen as:
+     ~/../../cygdrive/c/Users/n2omatt/Documents/Projects/N2OMatt/dots
+  Instead of:
+     ~/Documents/Projects/N2OMatt/dots
+
 version 0.7.3 - Apr 22, 2017
 -- General --
   [BUG FIX]: v0.7.2 Let some debug code enabled...

@@ -40,16 +40,18 @@
 ##                                  Enjoy :)                                  ##
 ##----------------------------------------------------------------------------##
 
-#COWTODO: Check if we can remove the absolute paths and instead use the ~ \
-#         This will enable us to use the "same" paths on OSX and Linux.
 #COWTODO: Change the termcolor to cowtermcolor.
 
-## Imports ##
+################################################################################
+## Imports                                                                    ##
+################################################################################
 import os;
 import os.path;
 import sys;
 import getopt;
 import pdb;
+import subprocess;
+from difflib import SequenceMatcher as SM;
 
 #Termcolor isn't a standard module (but is really nice), so we must
 #support system that doens't has it. On those systems the colored,
@@ -83,6 +85,28 @@ class Constants:
     ACTION_UPDATE          = "gosh_opt_update";
     ACTION_PRINT           = "gosh_opt_print";
     ACTION_EXISTS_BOOKMARK = "gosh_opt_exists_bookmark";
+
+    #OSes names
+    ##  Thanks to ICB on StackOverflow
+    ##      https://stackoverflow.com/a/13874620/5482197
+    ## .---------------------.----------.
+    ## | System              | Value    |
+    ## |---------------------|----------|
+    ## | Linux (2.x and 3.x) | linux2   |
+    ## | Windows             | win32    |
+    ## | Windows/Cygwin      | cygwin   |
+    ## | Mac OS X            | darwin   |
+    ## | OS/2                | os2      |
+    ## | OS/2 EMX            | os2emx   |
+    ## | RiscOS              | riscos   |
+    ## | AtheOS              | atheos   |
+    ## | FreeBSD 7           | freebsd7 |
+    ## | FreeBSD 8           | freebsd8 |
+    ## '---------------------'----------'
+    OS_NAME_CYGWIN    = "cygwin";
+    OS_NAME_GNU_LINUX = "linux";
+    OS_NAME_NT        = "win32";
+    OS_NAME_OSX       = "darwin";
 
 class Globals:
     bookmarks     = {};    #Our bookmarks dictionary.
@@ -181,28 +205,55 @@ def write_bookmarks():
         bookmarks_file.close();
 
 
-
 ################################################################################
 ## Helper Functions                                                           ##
 ################################################################################
 def bookmark_exists(name):
     read_bookmarks();
-    return name in Globals.bookmarks.keys();
+    return None if name is None else name in Globals.bookmarks.keys();
+
+def name_for_fuzzy_name(fuzzy_name):
+    best_score = 0;
+    best_name  = None;
+
+    for k in Globals.bookmarks.keys():
+        score = SM(None, k, fuzzy_name).ratio();
+        ## COWNOTE(n2omatt): For debug only...
+        # print "Name  : ", fuzzy_name;
+        # print "Key   : ", k;
+        # print "Score : ", score;
+        # print "BScore: ", best_score;
+        # print "--";
+
+        if(score > best_score):
+            best_name  = k;
+            best_score = score;
+
+        ## Best match...
+        ##   cannot be better.
+        if(best_score == 1):
+            return k;
+
+    return best_name;
+
+    return None;
 
 def path_for_bookmark(name):
     read_bookmarks();
     return Globals.bookmarks[name];
 
 def bookmark_for_path(path):
-    if(path is None):
-        return None;
+    if(path is None or len(path) == 0):
+        path = ".";
 
     read_bookmarks();
-    full_path = canonize_path(path);
+    abs_path = canonize_path(path);
 
     for bookmark_name in Globals.bookmarks.keys():
-        bookmark_path = canonize_path(Globals.bookmarks[bookmark_name]);
-        if(bookmark_path == full_path):
+        bookmark_path = Globals.bookmarks[bookmark_name];
+        bookmark_path = canonize_path(bookmark_path);
+
+        if(bookmark_path == abs_path):
             return bookmark_name;
 
     return None;
@@ -220,9 +271,9 @@ def ensure_valid_bookmark_name_or_die(name):
                                                        Constants.BOOKMARK_SEPARATOR));
 
 def ensure_valid_path_or_die(path):
+    path = canonize_path(path);
     if(not os.path.isdir(path)):
         print_fatal("Path ({0}) is invalid.".format(C.magenta(path)));
-
 
 def ensure_bookmark_existance_or_die(name, bookmark_shall_exists):
     if(bookmark_exists(name) and bookmark_shall_exists == False):
@@ -237,8 +288,69 @@ def canonize_path(path):
 
     return path;
 
+def get_os_name():
+    name = sys.platform;
+    if  (Constants.OS_NAME_CYGWIN    in name): return Constants.OS_NAME_CYGWIN;
+    elif(Constants.OS_NAME_GNU_LINUX in name): return Constants.OS_NAME_GNU_LINUX;
+    else:
+        raise NotImplementedError;
+
+def make_relative_path(path):
+    path = path.lstrip().rstrip();
+
+    if(get_os_name() == Constants.OS_NAME_CYGWIN):
+        home_path = _get_home_path_for_cygwin(path);
+    else:
+        home_path = canonize_path("~");
+
+    rel_path = "~/" + os.path.relpath(path, home_path);
+
+    return rel_path;
+
 def remove_enclosing_quotes(value):
     return value.strip("'");
+
+
+################################################################################
+## Helper fuctions (Cygwin)                                                   ##
+################################################################################
+def _run_process(cmd):
+    process = subprocess.Popen(
+        [cmd],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        shell=True
+    );
+
+    return process.stdout.read().decode("UTF-8").replace("\n", "");
+
+def _get_home_path_for_cygwin(path):
+    ##COWNOTE(n2omatt): This is needed because in one configuration of
+    ## the home folder in cygwin makes the path looks wrong.
+    ## The situation is when the user set the its home folder to be a
+    ## symbolic link to a folder on NT.
+    ## For example if the user makes the home folder be:
+    ##    C:/Users/USERNAME
+    ## The realpath would be /cygdrive/c/Users/Username but yet the
+    ## unix tools would see the home folder as:
+    ##    /home/USERNAME
+    ## This way the os.path.relpath doesn't works as expected
+    ## making a bookmark of the path:
+    ##    $HOME/Documents/Projects/N2OMatt/dots
+    ## Be seen as:
+    ##    ~/../../cygdrive/c/Users/n2omatt/Documents/Projects/N2OMatt/dots
+    ## Instead of:
+    ##    ~/Documents/Projects/N2OMatt/dots
+    ##
+    ## So this function get's the REAL home path taking in account the
+    ## fact that the path might be on NT "field".
+    home_path = os.path.expanduser("~");
+
+    nt_home = _run_process("cygpath -w {0}".format(home_path));
+    nt_home = nt_home.replace("\\", "/");
+
+    unix_home = _run_process("cygpath -u {0}".format(nt_home));
+    return canonize_path(unix_home);
 
 
 ################################################################################
@@ -285,7 +397,7 @@ Notes:
 
 def print_version():
     print "\n".join([
-        "gosh - 0.7.3 - N2OMatt <n2omatt@amazingcow.com>",
+        "gosh - 0.7.4 - N2OMatt <n2omatt@amazingcow.com>",
         "Copyright (c) 2015 - 2017 - Amazing Cow",
         "This is a free software (GPLv3) - Share/Hack it",
         "Check opensource.amazingcow.com for more :)"]);
@@ -296,7 +408,7 @@ def print_version():
 ################################################################################
 ## Action Functions                                                           ##
 ################################################################################
-def list_bookmarks(long = False):
+def action_list_bookmarks(long = False):
     read_bookmarks();
 
     if(len(Globals.bookmarks) == 0):
@@ -319,7 +431,10 @@ def list_bookmarks(long = False):
 
     exit(0);
 
-def add_bookmark(name, path):
+def action_add_bookmark(name, path):
+    if(path is None or len(path) == 0):
+        path = ".";
+
     #Must be valid name.
     ensure_valid_bookmark_name_or_die(name);
 
@@ -330,25 +445,27 @@ def add_bookmark(name, path):
     ensure_bookmark_existance_or_die(name, bookmark_shall_exists=False);
 
     #Check if path is valid path.
-    abs_path = canonize_path(path);
-    ensure_valid_path_or_die(abs_path);
+    added_path = make_relative_path(path);
+    ensure_valid_path_or_die(added_path);
 
-    print abs_path;
     #Name and Path are valid... Add it and inform the user.
-    Globals.bookmarks[name] = abs_path;
-    msg = "Bookmark added:\n  ({0}) - ({1})".format(C.blue(name),
-                                                    C.magenta(abs_path));
+    Globals.bookmarks[name] = added_path;
+    msg = "Bookmark added:\n  ({0}) - ({1})".format(
+        C.blue   (name),
+        C.magenta(added_path)
+    );
     print msg;
 
     write_bookmarks(); #Save to file
     exit(0);
 
-def remove_bookmark(name):
-    #Must be valid name.
-    ensure_valid_bookmark_name_or_die(name);
-
+def action_remove_bookmark(name):
     #Load from file.
     read_bookmarks();
+    name = name_for_fuzzy_name(name);
+
+    #Must be valid name.
+    ensure_valid_bookmark_name_or_die(name);
 
     #Check if we actually have a bookmark with this name.
     ensure_bookmark_existance_or_die(name, bookmark_shall_exists=True);
@@ -360,7 +477,12 @@ def remove_bookmark(name):
     write_bookmarks(); #Save to file
     exit(0);
 
-def update_bookmark(name, path):
+def action_update_bookmark(name, path):
+    if(path is None or len(path) == 0):
+        path = ".";
+
+    name = name_for_fuzzy_name(name);
+
     #Must be valid name.
     ensure_valid_bookmark_name_or_die(name);
 
@@ -371,16 +493,61 @@ def update_bookmark(name, path):
     ensure_bookmark_existance_or_die(name, bookmark_shall_exists=True);
 
     #Check if path is valid path.
-    abs_path = canonize_path(path);
-    ensure_valid_path_or_die(abs_path);
+    updated_path = make_relative_path(path);
+    ensure_valid_path_or_die(updated_path);
 
     #Bookmark exists and path is valid... Update it and inform the user.
-    Globals.bookmarks[name] = abs_path;
-    msg = "Bookmark updated:\n  ({0}) - ({1})".format(C.blue(name),
-                                                      C.magenta(abs_path));
+    Globals.bookmarks[name] = updated_path;
+    msg = "Bookmark updated:\n  ({0}) - ({1})".format(
+        C.blue   (name),
+        C.magenta(updated_path)
+    );
     print msg;
 
     write_bookmarks(); #Save to file
+    exit(0);
+
+def action_bookmark_exists(path):
+    #Load from file.
+    read_bookmarks();
+
+    bookmark_name = bookmark_for_path(path);
+    if(bookmark_name is None):
+        print "No bookmark";
+        exit(1);
+    else:
+        print "Bookmark: ({0})".format(C.blue(bookmark_name));
+        exit(0);
+
+def action_print_bookmark(name):
+    #Load from file.
+    read_bookmarks();
+
+    if(len(name) == 0):
+        print_fatal("Missing args - name.");
+
+    name = name_for_fuzzy_name(name);
+
+    if(not bookmark_exists(name)):
+        msg = "Bookmark ({0}) doesn't exists.".format(C.blue(name));
+        print msg;
+        exit(1);
+
+    #Bookmark exists, check if path is valid.
+    bookmark_path = path_for_bookmark(name);
+    bookmark_path = canonize_path(bookmark_path);
+    if(not os.path.isdir(bookmark_path)):
+        msg = "Bookmark ({0}) {1} ({2})".format(
+            C.blue(name),
+            "exists but it's path is invalid.",
+            C.magenta(bookmark_path)
+        );
+        print msg;
+        exit(1);
+
+    #Bookmark and path are valid.
+    #Print the path to gosh shell script change the directory.
+    print bookmark_path;
     exit(0);
 
 
@@ -410,55 +577,32 @@ def main():
     if(Constants.ACTION_VERSION == first_arg): print_version();
 
     #List.
-    if(Constants.ACTION_LIST      == first_arg): list_bookmarks();
-    if(Constants.ACTION_LIST_LONG == first_arg): list_bookmarks(long=True);
+    if(Constants.ACTION_LIST      == first_arg): action_list_bookmarks();
+    if(Constants.ACTION_LIST_LONG == first_arg): action_list_bookmarks(long=True);
 
-    #Remove / Add / Update.
-    if(Constants.ACTION_REMOVE  == first_arg): remove_bookmark(second_arg);
-    if(Constants.ACTION_ADD     == first_arg): add_bookmark   (second_arg, third_arg);
-    if(Constants.ACTION_UPDATE  == first_arg): update_bookmark(second_arg, third_arg);
-
-    #Exists Bookmark
+    #Add
+    if(Constants.ACTION_ADD == first_arg):
+        action_add_bookmark (second_arg, third_arg);
+    #Remove
+    if(Constants.ACTION_REMOVE == first_arg):
+        action_remove_bookmark(second_arg);
+    #Update
+    if(Constants.ACTION_UPDATE == first_arg):
+        action_update_bookmark(second_arg, third_arg);
+    #Exists
     if(Constants.ACTION_EXISTS_BOOKMARK == first_arg):
-        bookmark_name = bookmark_for_path(second_arg);
-        if(bookmark_name is None):
-            print "No bookmark";
-            exit(1);
-        else:
-            print "Bookmark: ({0})".format(C.blue(bookmark_name));
-            exit(0);
-
-    #Print.
+        action_bookmark_exists(second_arg);
+    #Print
     if(Constants.ACTION_PRINT == first_arg):
-        if(len(second_arg) == 0):
-            print_fatal("Missing args - name.");
-
-        if(not bookmark_exists(second_arg)):
-            msg = "Bookmark ({0}) doesn't exists.".format(C.blue(second_arg));
-            print msg;
-            exit(1);
-
-
-        #Bookmark exists, check if path is valid.
-        bookmark_path = path_for_bookmark(second_arg);
-        if(not os.path.isdir(bookmark_path)):
-            msg = "Bookmark ({0}) {1} ({2})".format(C.blue(second_arg),
-                                                    "exists but it's path is invalid.",
-                                                    C.magenta(bookmark_path));
-            print msg;
-            exit(1);
-
-        #Bookmark and path are valid.
-        #Print the path to gosh shell script change the directory.
-        print bookmark_path;
-        exit(0);
+        action_print_bookmark(second_arg);
 
 
 if(__name__ == "__main__"):
     #If any error occurs in main, means that user is trying to use
     #the gosh-core instead of gosh. Since gosh always pass the parameters
     #even user didn't. So inform the user that the correct is use gosh.
-    try:
+    # try:
         main();
-    except Exception, e:
-        print_fatal("You should use gosh not gosh-core. (Exception: ({0}))".format(e));
+    # except Exception, e:
+    #     # print_fatal("You should use gosh not gosh-core. (Exception: ({0}))".format(e));
+    #     raise e;
