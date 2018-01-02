@@ -25,7 +25,16 @@ set -e;
 ## Variables                                                                  ##
 ##----------------------------------------------------------------------------##
 BASH_PROFILE=$HOME/.bashrc
-BASH_COMPLETION_DIR=$(pkg-config --variable=completionsdir bash-completion);
+
+## Check if we have pkg-config
+## COWTODO(n2omatt): Check another way to achieve that... 
+##  On BSD the pkg-config isn't equal to GNU one...
+if [ $(pkg-config --variable=completionsdir bash-completion) ]; then
+    BASH_COMPLETION_DIR=$(pkg-config --variable=completionsdir bash-completion);
+else
+    BASH_COMPLETION_DIR="";
+fi;
+
 DESTDIR=/usr/local/bin
 
 
