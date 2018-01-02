@@ -1,4 +1,32 @@
 ================================================================================
+== Start v0.8.x                                                               ==
+================================================================================
+version 0.8.0 - Jan 02, 2017
+-- General --
+  - Start adding support to BSDs and OSX.
+  - Change the old Makefile to a new install.sh script.
+    The functionallity is the same, but the Makefile syntax makes the
+    file be very, very clutered.
+
+-- TODO --
+  - The pkg-config call on FreeBSD is different from GNU/Linux, so now the
+    bash-completion isn't installing on BSDs.
+
+-- gosh.sh --
+  [IMPROVE]: Make the shebang portable.
+  [IMPROVE]: Add the new Amazing Cow's license headers.
+
+-- gosh-core.sh --
+  [IMPROVE]: Make the shebang portable.
+  [IMPROVE]: Add the new Amazing Cow's license headers.
+  [IMPROVE]: Some cosmetic changes.
+  [NEW    ]: Implemented more OSes names.
+  [IMPROVE]: The canonize_path function now works with sys-links.
+             This is due the FreeBSD behaviour of put the user $HOME on
+             /usr/home instead of /home like GNU/Linux.
+
+
+================================================================================
 == Start v0.7.x                                                               ==
 ================================================================================
 version 0.7.4 - Sep 02, 2017
@@ -21,6 +49,8 @@ version 0.7.4 - Sep 02, 2017
   Instead of:
      ~/Documents/Projects/N2OMatt/dots
 
+
+--------------------------------------------------------------------------------
 version 0.7.3 - Apr 22, 2017
 -- General --
   [BUG FIX]: v0.7.2 Let some debug code enabled...
