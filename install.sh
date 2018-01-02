@@ -53,8 +53,8 @@ install_gosh()
     if [ -n "$BASH_COMPLETION_DIR" ]; then
        sudo cp -f ./gosh_bash-completion.sh $BASH_COMPLETION_DIR/gosh;
     else
-       echo "[SKIPPING] ($BASH_COMPLETION_DIR) does not exists...";
-       echo "You may want set BASH_COMPLETION_DIR to the actual dir.";
+       echo "    [SKIPPING] ($BASH_COMPLETION_DIR) does not exists...";
+       echo "    You may want set BASH_COMPLETION_DIR to the actual dir.";
     fi
 
     echo "    [Done]";
@@ -98,8 +98,8 @@ uninstall_gosh()
     if [ -f $BASH_COMPLETION_DIR/gosh ]; then
        sudo rm -f $BASH_COMPLETION_DIR/gosh;
     else
-       echo "[SKIPPING] ($BASH_COMPLETION_DIR/gosh) does not exists...";
-       echo "You may want set BASH_COMPLETION_DIR to the actual dir.";
+       echo "    [SKIPPING] ($BASH_COMPLETION_DIR/gosh) does not exists...";
+       echo "    You may want set BASH_COMPLETION_DIR to the actual dir.";
     fi
 
     echo "    [Done]";
