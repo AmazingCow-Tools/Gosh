@@ -266,7 +266,7 @@ def ensure_bookmark_existance_or_die(name, bookmark_shall_exists):
 
 def canonize_path(path):
     path = path.lstrip().rstrip();
-    path = os.path.abspath(os.path.expanduser(path));
+    path = os.path.realpath(os.path.expanduser(path));
 
     return path;
 
