@@ -66,7 +66,8 @@ class Constants:
     ACTION_PRINT           = "gosh_opt_print";
     ACTION_EXISTS_BOOKMARK = "gosh_opt_exists_bookmark";
 
-    #OSes names
+    ##--------------------------------------------------------------------------
+    ## OSes names
     ##  Thanks to ICB on StackOverflow
     ##      https://stackoverflow.com/a/13874620/5482197
     ## .---------------------.----------.
@@ -87,6 +88,7 @@ class Constants:
     OS_NAME_GNU_LINUX = "linux";
     OS_NAME_NT        = "win32";
     OS_NAME_OSX       = "darwin";
+    OS_NAME_BSD       = "bsd";
 
 class Globals:
     bookmarks     = {};    #Our bookmarks dictionary.
@@ -270,8 +272,11 @@ def canonize_path(path):
 
 def get_os_name():
     name = sys.platform;
+
     if  (Constants.OS_NAME_CYGWIN    in name): return Constants.OS_NAME_CYGWIN;
     elif(Constants.OS_NAME_GNU_LINUX in name): return Constants.OS_NAME_GNU_LINUX;
+    elif(Constants.OS_NAME_OSX       in name): return Constants.OS_NAME_OSX;
+    elif(Constants.OS_NAME_BSD       in name): return Constants.OS_NAME_BSD;
     else:
         raise NotImplementedError;
 
