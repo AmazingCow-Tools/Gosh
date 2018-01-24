@@ -85,6 +85,7 @@ class Constants:
     ## | FreeBSD 8           | freebsd8 |
     ## '---------------------'----------'
     OS_NAME_CYGWIN    = "cygwin";
+    OS_NAME_WINDOWS   = "win32";
     OS_NAME_GNU_LINUX = "linux";
     OS_NAME_NT        = "win32";
     OS_NAME_OSX       = "darwin";
@@ -274,6 +275,7 @@ def get_os_name():
     name = sys.platform;
 
     if  (Constants.OS_NAME_CYGWIN    in name): return Constants.OS_NAME_CYGWIN;
+    if  (Constants.OS_NAME_WINDOWS   in name): return Constants.OS_NAME_WINDOWS;
     elif(Constants.OS_NAME_GNU_LINUX in name): return Constants.OS_NAME_GNU_LINUX;
     elif(Constants.OS_NAME_OSX       in name): return Constants.OS_NAME_OSX;
     elif(Constants.OS_NAME_BSD       in name): return Constants.OS_NAME_BSD;
@@ -421,8 +423,11 @@ def action_add_bookmark(name, path):
     if(path is None or len(path) == 0):
         path = ".";
 
+    if((name is None or len(name) == 0) and path == "."):
+        name = os.path.basename(canonize_path("."));
+
     #Must be valid name.
-    ensure_valid_bookmark_name_or_die(name);
+    ## ensure_valid_bookmark_name_or_die(name);
 
     #Load from file.
     read_bookmarks();
