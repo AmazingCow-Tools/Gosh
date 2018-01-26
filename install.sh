@@ -19,23 +19,75 @@
 ##                                                                            ##
 ##---------------------------------------------------------------------------~##
 
+## Stop on errors...
 set -e;
+
+
+##----------------------------------------------------------------------------##
+## Helper Functions                                                           ##
+##----------------------------------------------------------------------------##
+warn()
+{
+    echo "[WARN]" "$1";
+}
+
+is_installed()
+{
+    RET=$(whereis -b $1 | cut -d":" -f2 | awk '{$1=$1};1' | cut -d" " -f1)
+
+    if [ -n "$RET" ]; then
+        return 0;
+    fi;
+
+    return 1;
+}
+
+find_real_user_home()
+{
+    ##--------------------------------------------------------------------------
+    ## We need supress the errors here since the printenv might fail...
+    ## Restore it at the end of the function.
+    set +e;
+
+    if [ $UID == 0 ]; then
+        USER=$(printenv SUDO_USER);
+        if [ -z "$USER" ]; then
+            echo "Installing as root user...";
+            export REAL_USER_HOME="$HOME";
+        else
+            echo "Installing with sudo...";
+            export REAL_USER_HOME=$(getent passwd "$USER" | cut -d: -f6);
+        fi;
+    else
+        echo "Installing as normal user...";
+        export REAL_USER_HOME="$HOME";
+    fi;
+
+    ##--------------------------------------------------------------------------
+    ## Restoring the error handling...
+    set -e;
+}
+
 
 ##----------------------------------------------------------------------------##
 ## Variables                                                                  ##
 ##----------------------------------------------------------------------------##
-BASH_PROFILE=$HOME/.bashrc
+find_real_user_home;
 
+BASH_PROFILE=$REAL_USER_HOME/.bashrc
+DESTDIR=/usr/local/bin
+
+
+##------------------------------------------------------------------------------
 ## Check if we have pkg-config
-## COWTODO(n2omatt): Check another way to achieve that... 
+## COWTODO(n2omatt): Check another way to achieve that...
 ##  On BSD the pkg-config isn't equal to GNU one...
-if [ $(pkg-config --variable=completionsdir bash-completion) ]; then
+is_installed pkg-config;
+if [ $? == 0 ]; then
     BASH_COMPLETION_DIR=$(pkg-config --variable=completionsdir bash-completion);
 else
-    BASH_COMPLETION_DIR="";
+    warn "pkg-config isn't installed";
 fi;
-
-DESTDIR=/usr/local/bin
 
 
 ##----------------------------------------------------------------------------##
@@ -47,11 +99,11 @@ install_gosh()
     ## Gosh.
     echo "--> Installing gosh.";
 
-    sudo cp -f ./gosh-core.py  $DESTDIR/gosh-core
-    sudo cp -f ./gosh.sh       $DESTDIR/gosh
+    cp -f ./gosh-core.py  $DESTDIR/gosh-core
+    cp -f ./gosh.sh       $DESTDIR/gosh
 
-    sudo chmod 755 $DESTDIR/gosh-core
-    sudo chmod 755 $DESTDIR/gosh
+    chmod 755 $DESTDIR/gosh-core
+    chmod 755 $DESTDIR/gosh
 
     echo "    [Done]";
 
@@ -60,7 +112,7 @@ install_gosh()
     echo "--> Install the bash completion script at ($BASH_COMPLETION_DIR).";
 
     if [ -n "$BASH_COMPLETION_DIR" ]; then
-       sudo cp -f ./gosh_bash-completion.sh $BASH_COMPLETION_DIR/gosh;
+       cp -f ./gosh_bash-completion.sh $BASH_COMPLETION_DIR/gosh;
     else
        echo "    [SKIPPING] ($BASH_COMPLETION_DIR) does not exists...";
        echo "    You may want set BASH_COMPLETION_DIR to the actual dir.";
@@ -95,8 +147,8 @@ uninstall_gosh()
     ## Gosh
     echo "--> Uninstall gosh.";
 
-    sudo rm -f $DESTDIR/gosh-core;
-    sudo rm -f $DESTDIR/gosh;
+    rm -f $DESTDIR/gosh-core;
+    rm -f $DESTDIR/gosh;
 
     echo "    [Done]";
 
@@ -105,7 +157,7 @@ uninstall_gosh()
     echo "--> Remove the bash completion script at ($BASH_COMPLETION_DIR).";
 
     if [ -f $BASH_COMPLETION_DIR/gosh ]; then
-       sudo rm -f $BASH_COMPLETION_DIR/gosh;
+       rm -f $BASH_COMPLETION_DIR/gosh;
     else
        echo "    [SKIPPING] ($BASH_COMPLETION_DIR/gosh) does not exists...";
        echo "    You may want set BASH_COMPLETION_DIR to the actual dir.";
@@ -142,4 +194,3 @@ else
     echo "Invalid option: ($1)";
     echo "Usage: install.sh [install] [uninstall]";
 fi;
-
