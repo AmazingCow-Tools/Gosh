@@ -19,10 +19,6 @@
 ##                                                                            ##
 ##---------------------------------------------------------------------------~##
 
-## Stop on errors...
-set -e;
-
-
 ##----------------------------------------------------------------------------##
 ## Helper Functions                                                           ##
 ##----------------------------------------------------------------------------##
@@ -44,11 +40,7 @@ is_installed()
 
 find_real_user_home()
 {
-    ##--------------------------------------------------------------------------
-    ## We need supress the errors here since the printenv might fail...
     ## Restore it at the end of the function.
-    set +e;
-
     if [ $UID == 0 ]; then
         USER=$(printenv SUDO_USER);
         if [ -z "$USER" ]; then
@@ -62,10 +54,6 @@ find_real_user_home()
         echo "Installing as normal user...";
         export REAL_USER_HOME="$HOME";
     fi;
-
-    ##--------------------------------------------------------------------------
-    ## Restoring the error handling...
-    set -e;
 }
 
 
