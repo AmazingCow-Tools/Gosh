@@ -86,6 +86,10 @@ install_gosh()
     ##--------------------------------------------------------------------------
     ## Gosh.
     echo "--> Installing gosh.";
+    echo "      .bashrc         location: ($BASH_PROFILE)";
+    echo "      bash-completion location: ($BASH_COMPLETION_DIR)";
+    echo "      destination     location: ($DESTDIR)";
+
 
     cp -f ./gosh-core.py  $DESTDIR/gosh-core
     cp -f ./gosh.sh       $DESTDIR/gosh
